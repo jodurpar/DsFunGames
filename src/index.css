@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-game-bg: #0f172a;
+  --color-game-card: #1e293b;
+  --color-game-accent: #3b82f6;
+  --color-game-text: #f8fafc;
+  --color-game-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--color-game-bg);
+  color: var(--color-game-text);
+  font-family: var(--font-sans);
+}
