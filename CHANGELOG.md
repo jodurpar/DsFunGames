@@ -11,8 +11,11 @@ All notable changes to this project will be documented in this file.
 - **Internationalization (i18n)**: Implemented full multi-language support (English/Spanish) across all games and the main application using `i18next`.
 - **LanguageSelector**: Added a premium language dropdown component in the header with persistent local storage.
 - **OrientationGuard**: Implemented a new component to enforce landscape mode on mobile for complex games, featuring an automated "Tactical Mode" button.
+- **Docker Infrastructure**: Created a multi-stage Dockerfile and docker-compose configuration for optimized production deployment.
+- **Branding**: Updated official copyright to "DuranSoftware - Strategy Gaming Studio".
 
 ### Changed
+- **Vite Configuration**: Added `host.docker.internal` to allowed hosts to support containerized development environments.
 - **UI Architecture**: Refactored the `MainLayout` to have a persistent header and footer across all pages.
 - **Dynamic Headers**: Optimized the main header to be large on the Home page and ultra-compact on game pages to maximize playable area.
 - **Compact Footer**: Implemented a single-line minimalist footer for game views.
