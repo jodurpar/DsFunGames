@@ -6,7 +6,8 @@
 
 FunGames is a premium suite of minimalist strategy and logic games designed for modern commanders. It combines high-intensity logic with a sleek, tactical aesthetic.
 
-**Test Page**: [https://dsfungames.scifyclub.com/](https://dsfungames.scifyclub.com/)
+**Test Page**: [https://dsfungames.scifyclub.com/](https://dsfungames.scifyclub.com/)  
+**Source Code**: [https://github.com/jodurpar/DsFunGames](https://github.com/jodurpar/DsFunGames)
 
 ## 🚀 Experience the Future of Strategy
 
