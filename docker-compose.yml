@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dsfungames-web
+    restart: unless-stopped
+    ports:
+      - "15260:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - dsfungames-net
+
+networks:
+  dsfungames-net:
+    driver: bridge
