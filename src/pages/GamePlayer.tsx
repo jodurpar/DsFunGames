@@ -69,9 +69,9 @@ export default function GamePlayer() {
   };
 
   return (
-    <div className="space-y-10 sm:space-y-14">
+    <div className="flex flex-col h-full gap-4 sm:gap-6">
       {/* Dynamic Game Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 sm:gap-0">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-0 shrink-0">
         <div className="flex items-center gap-6">
           <Link
             to="/"
@@ -98,7 +98,7 @@ export default function GamePlayer() {
         </div>
       </div>
 
-      <div className="game-container relative min-h-[500px]">
+      <div className="game-container relative flex-1 min-h-0">
         <Suspense fallback={<GameLoading />}>
           {renderGame()}
         </Suspense>

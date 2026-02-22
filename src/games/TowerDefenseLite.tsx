@@ -151,14 +151,19 @@ export default function TowerDefenseLite() {
         </div>
 
         {/* Board */}
-        <div className="w-full relative group p-1 bg-white rounded-[3rem] shadow-2xl border border-game-border">
+        <div className="w-full relative group p-4 sm:p-8 flex justify-center items-center perspective-1000">
+          {/* Subtle background gradient for studio lighting */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-transparent pointer-events-none rounded-[4rem]" />
+
           <div
-            className="relative bg-[#fcfdfe] rounded-[2.5rem] overflow-hidden cursor-crosshair sm:shrink-0 mx-auto"
+            className="relative bg-[#fcfdfe] rounded-[100px] cursor-crosshair sm:shrink-0 mx-auto transition-transform duration-700"
             style={{
               width: GRID_WIDTH * CELL_SIZE,
               height: GRID_HEIGHT * CELL_SIZE,
               backgroundImage: 'radial-gradient(circle, #e2e8f0 1.5px, transparent 1.5px)',
-              backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`
+              backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`,
+              boxShadow: 'inset 0 4px 10px rgba(255,255,255,1), inset 0 -4px 12px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.1), 0 0 0 10px rgba(255,255,255,0.7)',
+              border: '1px solid rgba(255,255,255,0.8)'
             }}
           >
             {/* Dynamic Path */}
@@ -177,16 +182,24 @@ export default function TowerDefenseLite() {
             ))}
 
             {/* Start/Base Markers */}
+            {/* The Spawner (Green Portal/Icon) */}
             <div className="absolute z-10 flex items-center justify-center pointer-events-none"
               style={{ left: path[0].x * CELL_SIZE, top: path[0].y * CELL_SIZE, width: CELL_SIZE, height: CELL_SIZE }}>
-              <div className="w-8 h-8 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <div className="w-[80%] h-[80%] rotate-45 bg-gradient-to-br from-emerald-400 to-green-900 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.4)] border border-emerald-300/50 flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-emerald-300/40 shadow-[0_0_15px_#6ee7b7] -rotate-45" />
+                <div className="w-1/2 h-1/2 bg-emerald-100 rounded-full shadow-[0_0_20px_#a7f3d0] animate-pulse" />
               </div>
             </div>
-            <div className="absolute z-10 flex items-center justify-center pointer-events-none"
+
+            {/* The Base to Conquere (Red Tower) */}
+            <div className="absolute z-10 flex items-center justify-center pointer-events-none perspective-1000"
               style={{ left: path[path.length - 1].x * CELL_SIZE, top: path[path.length - 1].y * CELL_SIZE, width: CELL_SIZE, height: CELL_SIZE }}>
-              <div className="w-8 h-8 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center">
-                <div className="w-3 h-3 bg-red-500 rounded-sm" />
+              <div className="w-[80%] h-[90%] bg-gradient-to-t from-slate-900 to-red-900 rounded-3xl shadow-[0_10px_20px_rgba(220,38,38,0.3)] border-b-4 border-red-950 flex flex-col items-center justify-end pb-2 relative overflow-hidden">
+                <div className="absolute top-[20%] w-[90%] h-1 bg-red-400 shadow-[0_0_10px_#f87171,0_0_20px_#f87171] rounded-full opacity-80" />
+                <div className="absolute bottom-[20%] w-full h-1 bg-red-500 shadow-[0_0_12px_#ef4444] rounded-full opacity-70" />
+                <div className="absolute top-1 w-1/2 h-1/2 bg-slate-800 rounded-full border-2 border-red-400/50 shadow-[inset_0_0_10px_rgba(239,68,68,0.5)] flex items-center justify-center">
+                  <div className="w-1/2 h-1/2 bg-red-300 rounded-full shadow-[0_0_15px_#fca5a5] animate-pulse" />
+                </div>
               </div>
             </div>
 
@@ -209,18 +222,27 @@ export default function TowerDefenseLite() {
             {towers.map(tower => (
               <motion.div
                 key={tower.id}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute z-30 flex items-center justify-center"
+                initial={{ scale: 0, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                className="absolute z-30 flex items-center justify-center perspective-1000"
                 style={{ left: tower.pos.x * CELL_SIZE, top: tower.pos.y * CELL_SIZE, width: CELL_SIZE, height: CELL_SIZE }}
               >
-                <div className="relative group/tower">
-                  <div className="w-10 h-10 bg-white rounded-2xl shadow-lg border-2 border-game-accent flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-game-accent fill-game-accent/10" />
+                <div className="relative group/tower w-full h-full flex items-center justify-center">
+                  {/* Tower Base (3D Neon dark cylinder look) */}
+                  <div className="w-[80%] h-[90%] bg-gradient-to-t from-slate-900 to-indigo-900 rounded-3xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] border-b-4 border-indigo-950 flex flex-col items-center justify-end pb-2 relative overflow-hidden">
+                    {/* Glowing neon ring */}
+                    <div className="absolute top-[20%] w-[90%] h-1 bg-indigo-400 shadow-[0_0_10px_#818cf8,0_0_20px_#818cf8] rounded-full opacity-80" />
+                    <div className="absolute bottom-[20%] w-full h-1 bg-indigo-500 shadow-[0_0_12px_#6366f1] rounded-full opacity-70" />
+
+                    {/* Top emitter */}
+                    <div className="absolute top-1 w-1/2 h-1/2 bg-slate-800 rounded-full border-2 border-indigo-400/50 shadow-[inset_0_0_10px_rgba(99,102,241,0.5)] flex items-center justify-center">
+                      <div className="w-1/2 h-1/2 bg-indigo-300 rounded-full shadow-[0_0_15px_#a5b4fc] animate-pulse" />
+                    </div>
                   </div>
+
                   {/* Range Circle */}
                   <div
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-game-accent/5 border-2 border-game-accent/10 rounded-full pointer-events-none opacity-0 group-hover/tower:opacity-100 transition-all scale-95 group-hover/tower:scale-100"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-500/5 border border-indigo-500/20 rounded-full pointer-events-none opacity-0 group-hover/tower:opacity-100 transition-all scale-95 group-hover/tower:scale-100"
                     style={{ width: tower.range * 2 * CELL_SIZE, height: tower.range * 2 * CELL_SIZE }}
                   />
                 </div>
@@ -231,18 +253,26 @@ export default function TowerDefenseLite() {
             {enemies.map(enemy => (
               <div
                 key={enemy.id}
-                className="absolute z-40 transition-all duration-100"
+                className="absolute z-40"
                 style={{
                   left: enemy.pos.x * CELL_SIZE + CELL_SIZE / 2,
                   top: enemy.pos.y * CELL_SIZE + CELL_SIZE / 2,
                   transform: 'translate(-50%, -50%)'
                 }}
               >
-                <div className="relative h-8 w-8 flex flex-col items-center gap-1">
-                  <div className="h-4 w-4 bg-slate-900 rounded-full shadow-xl border-2 border-white ring-2 ring-red-500/20" />
-                  <div className="w-6 h-1 bg-slate-200 rounded-full overflow-hidden border border-white">
+                <div className="relative w-10 h-10 flex items-center justify-center">
+                  {/* Floating geometric bug/crystal */}
+                  <motion.div
+                    animate={{ y: [-2, 2, -2] }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                    className="w-6 h-6 rotate-45 bg-gradient-to-br from-indigo-500 to-purple-900 rounded-sm shadow-[0_5px_15px_rgba(79,70,229,0.4)] border border-indigo-400/50"
+                  />
+                  <div className="absolute -bottom-3 w-8 h-2 bg-black/20 rounded-full blur-[2px]" />
+
+                  {/* Health Bar (Glassmorphic pill) */}
+                  <div className="absolute -top-3 w-8 h-1.5 bg-slate-900/40 backdrop-blur-sm rounded-full overflow-hidden border border-white/10 shadow-sm">
                     <div
-                      className="h-full bg-red-500 transition-all"
+                      className="h-full bg-indigo-400 shadow-[0_0_8px_#818cf8] transition-all"
                       style={{ width: `${(enemy.health / enemy.maxHealth) * 100}%` }}
                     />
                   </div>
@@ -250,18 +280,31 @@ export default function TowerDefenseLite() {
               </div>
             ))}
 
-            {/* Projectiles */}
-            {projectiles.map(p => (
-              <div
-                key={p.id}
-                className="absolute z-50 w-2 h-2 bg-game-accent rounded-full shadow-sm"
-                style={{
-                  left: (p.start.x + (p.target.x - p.start.x) * p.progress) * CELL_SIZE + CELL_SIZE / 2,
-                  top: (p.start.y + (p.target.y - p.start.y) * p.progress) * CELL_SIZE + CELL_SIZE / 2,
-                  transform: 'translate(-50%, -50%)'
-                }}
-              />
-            ))}
+            {/* Laser Projectiles */}
+            {projectiles.map(p => {
+              const dx = p.target.x - p.start.x;
+              const dy = p.target.y - p.start.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              const angle = Math.atan2(dy, dx);
+
+              return (
+                <div
+                  key={p.id}
+                  className="absolute z-[45] pointer-events-none origin-left"
+                  style={{
+                    left: p.start.x * CELL_SIZE + CELL_SIZE / 2,
+                    top: p.start.y * CELL_SIZE + CELL_SIZE / 2, // starting from center of tower base
+                    width: distance * CELL_SIZE * p.progress, // Stretch dynamically outwards
+                    height: 4, // much thicker
+                    background: 'linear-gradient(90deg, rgba(238,242,255,0.8), #818cf8, #ffffff)',
+                    boxShadow: '0 0 10px #4f46e5, 0 0 20px #818cf8, 0 0 30px #c7d2fe',
+                    transform: `rotate(${angle}rad) translateY(-20px)`, // Elevated slightly to match tower emitter
+                    opacity: p.progress > 0.8 ? 1 - (p.progress - 0.8) * 5 : 1, // Rapid snap fade at end
+                    borderRadius: '4px'
+                  }}
+                />
+              );
+            })}
 
             {/* Game Over Overlay */}
             <AnimatePresence>

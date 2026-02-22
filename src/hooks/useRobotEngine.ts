@@ -45,50 +45,79 @@ export function useRobotEngine() {
             Array(GRID_WIDTH).fill(null).map(() => ({ type: 'GRASS' }))
         );
 
-        let currX = 0;
-        let currY = 0;
         let path: Vector2[] = [{ x: 0, y: 0 }];
         newGrid[0][0] = { type: 'START' };
 
-        const minPathLength = 20 + (level * 2);
-        let attempts = 0;
+        let currX = 0;
+        let currY = 0;
         let success = false;
 
-        while (!success && attempts < 300) {
+        // Simple reliable path generation:
+        // Try to generate a random path up to max length. If it gets stuck or finishes, we just set the target at the last cell as long as it's far enough.
+        for (let attempts = 0; attempts < 100; attempts++) {
             path = [{ x: 0, y: 0 }];
             currX = 0;
             currY = 0;
-            let visitedEdges = { top: false, bottom: false, left: false, right: false };
+            let stuck = false;
 
-            for (let step = 0; step < 200; step++) {
+            const targetLength = 15 + (level * 3);
+
+            for (let step = 0; step < targetLength; step++) {
                 const moves: Vector2[] = [];
                 if (currX < GRID_WIDTH - 1) moves.push({ x: currX + 1, y: currY });
                 if (currY < GRID_HEIGHT - 1) moves.push({ x: currX, y: currY + 1 });
                 if (currX > 0) moves.push({ x: currX - 1, y: currY });
                 if (currY > 0) moves.push({ x: currX, y: currY - 1 });
 
-                const validMoves = moves.filter(m => !path.some(p => p.x === m.x && p.y === m.y));
-                if (validMoves.length === 0) break;
+                // Filter out moves that are already in the path or adjacent to the path (except the current cell) to prevent 2x2 grids of path
+                const validMoves = moves.filter(m => {
+                    if (path.some(p => p.x === m.x && p.y === m.y)) return false;
 
-                const next = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    // Simple check: don't allow path to touch itself to stay clean
+                    let neighborsInPath = 0;
+                    if (path.some(p => p.x === m.x + 1 && p.y === m.y)) neighborsInPath++;
+                    if (path.some(p => p.x === m.x - 1 && p.y === m.y)) neighborsInPath++;
+                    if (path.some(p => p.x === m.x && p.y === m.y + 1)) neighborsInPath++;
+                    if (path.some(p => p.x === m.x && p.y === m.y - 1)) neighborsInPath++;
+
+                    return neighborsInPath <= 1;
+                });
+
+                if (validMoves.length === 0) {
+                    stuck = true;
+                    break;
+                }
+
+                // Prefer moving right and down to reach the bottom right
+                let next;
+                if (Math.random() > 0.3) {
+                    const preferred = validMoves.filter(m => m.x >= currX && m.y >= currY);
+                    if (preferred.length > 0) {
+                        next = preferred[Math.floor(Math.random() * preferred.length)];
+                    } else {
+                        next = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    }
+                } else {
+                    next = validMoves[Math.floor(Math.random() * validMoves.length)];
+                }
+
                 path.push(next);
                 currX = next.x;
                 currY = next.y;
-
-                if (currX <= 1) visitedEdges.left = true;
-                if (currX >= GRID_WIDTH - 2) visitedEdges.right = true;
-                if (currY <= 1) visitedEdges.top = true;
-                if (currY >= GRID_HEIGHT - 2) visitedEdges.bottom = true;
-
-                const allEdgesVisited = visitedEdges.top && visitedEdges.bottom && visitedEdges.left && visitedEdges.right;
-                const distFromStart = Math.abs(currX) + Math.abs(currY);
-
-                if (path.length >= minPathLength && allEdgesVisited && distFromStart > (GRID_WIDTH / 2)) {
-                    success = true;
-                    break;
-                }
             }
-            attempts++;
+
+            const distFromStart = Math.abs(currX) + Math.abs(currY);
+            if (!stuck && distFromStart >= (GRID_WIDTH / 2)) {
+                success = true;
+                break;
+            }
+        }
+
+        // Failsafe if completely stuck 100 times
+        if (!success) {
+            path = [{ x: 0, y: 0 }];
+            for (let i = 1; i < GRID_WIDTH; i++) path.push({ x: i, y: 0 });
+            for (let i = 1; i < GRID_HEIGHT; i++) path.push({ x: GRID_WIDTH - 1, y: i });
         }
 
         path.forEach((p, idx) => {

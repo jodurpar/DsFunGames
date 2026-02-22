@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Gamepad2, Github, LayoutGrid } from 'lucide-react';
+import { Gamepad2, Github } from 'lucide-react';
 
 export default function MainLayout() {
   const location = useLocation();
@@ -23,7 +23,7 @@ export default function MainLayout() {
               <nav className="hidden md:flex items-center gap-1 border-l border-game-border pl-8">
                 <Link
                   to="/"
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${isHome ? 'bg-game-accent/5 text-game-accent' : 'text-game-muted hover:text-game-text hover:bg-slate-100'}`}
+                  className="px-4 py-2 rounded-lg text-sm font-bold transition-all bg-game-accent/5 text-game-accent"
                 >
                   Library
                 </Link>
@@ -31,15 +31,6 @@ export default function MainLayout() {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
-              {!isHome && (
-                <Link
-                  to="/"
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-sm font-bold text-game-muted hover:text-game-text hover:bg-slate-100 transition-all border border-transparent hover:border-game-border"
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                  <span className="hidden sm:inline">Back to Games</span>
-                </Link>
-              )}
               <a
                 href="https://github.com"
                 target="_blank"
@@ -49,28 +40,31 @@ export default function MainLayout() {
                 <Github className="w-5 h-5 sm:w-6 sm:h-6" />
               </a>
             </div>
+          </div>
         </header>
       )}
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <main className={`flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${isHome ? 'py-6 sm:py-10' : 'py-2 sm:py-4'}`}>
         <Outlet />
       </main>
 
-      <footer className="bg-white border-t border-game-border py-10 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center gap-6 sm:gap-8">
-          <div className="flex items-center gap-2 opacity-60 grayscale hover:grayscale-0 transition-all">
-            <Gamepad2 className="w-5 h-5 text-game-accent" />
-            <span className="font-extrabold tracking-tighter text-xl text-game-text">DsFunGames</span>
+      {isHome && (
+        <footer className="bg-white border-t border-game-border py-10 sm:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center gap-6 sm:gap-8">
+            <div className="flex items-center gap-2 opacity-60 grayscale hover:grayscale-0 transition-all">
+              <Gamepad2 className="w-5 h-5 text-game-accent" />
+              <span className="font-extrabold tracking-tighter text-xl text-game-text">DsFunGames</span>
+            </div>
+            <p className="text-sm text-game-muted max-w-md leading-relaxed">
+              Crafting minimal, high-quality strategy experiences for the modern web. Built with focus and precision.
+            </p>
+            <div className="w-12 h-1 bg-game-accent/10 rounded-full" />
+            <p className="text-[12px] font-medium text-game-muted/60 uppercase tracking-widest">
+              © {new Date().getFullYear()} Strategy Gaming Studio
+            </p>
           </div>
-          <p className="text-sm text-game-muted max-w-md leading-relaxed">
-            Crafting minimal, high-quality strategy experiences for the modern web. Built with focus and precision.
-          </p>
-          <div className="w-12 h-1 bg-game-accent/10 rounded-full" />
-          <p className="text-[12px] font-medium text-game-muted/60 uppercase tracking-widest">
-            © {new Date().getFullYear()} Strategy Gaming Studio
-          </p>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }

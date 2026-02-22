@@ -39,7 +39,9 @@ export default function LogicRobot() {
 
     const GRID_WIDTH = 10 + level;
     const GRID_HEIGHT = 10;
-    const cellSize = 58;
+    // Calculate cell size dynamically to ensure it never exceeds container width (max ~720px) 
+    // and naturally fits without vertical scrolling, capped at 48px to prevent gigantic cells.
+    const cellSize = Math.min(48, Math.floor(720 / GRID_WIDTH));
     const BOARD_WIDTH = GRID_WIDTH * cellSize;
     const BOARD_HEIGHT = GRID_HEIGHT * cellSize;
 
@@ -54,20 +56,32 @@ export default function LogicRobot() {
             <div className="relative w-full h-full flex items-center justify-center">
                 {Icon && (!cell.isLarge || cell.isAnchor) && (
                     <Icon
-                        className={`transition-all pointer-events-none ${cell.type === 'TARGET' ? 'text-green-400' : 'text-game-muted/30'} ${cell.isLarge ? 'absolute left-3 top-3 z-0' : ''}`}
+                        className={`transition-all pointer-events-none ${cell.type === 'TARGET' ? 'text-emerald-600 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'text-slate-500'} ${cell.isLarge ? 'absolute left-2 top-2 z-[30]' : 'relative z-10'}`}
                         style={{
-                            width: cell.isLarge ? (cellSize * 2 - 24) : (cellSize * 0.4),
-                            height: cell.isLarge ? (cellSize * 2 - 24) : (cellSize * 0.4)
+                            width: cell.isLarge ? (cellSize * 2 - 16) : (cellSize * 0.4),
+                            height: cell.isLarge ? (cellSize * 2 - 16) : (cellSize * 0.4),
+                            filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))'
                         }}
                     />
                 )}
                 {isRobot && (
                     <motion.div
                         layoutId="robot"
-                        className="absolute z-10 bg-game-accent rounded-full shadow-lg shadow-game-accent/50 flex items-center justify-center"
-                        style={{ width: cellSize * 0.7, height: cellSize * 0.7 }}
+                        className="absolute z-10 rounded-full flex items-center justify-center transform-gpu"
+                        style={{
+                            width: cellSize * 0.7,
+                            height: cellSize * 0.7,
+                            background: 'radial-gradient(circle at 30% 30%, #ffffff 0%, #e2e8f0 40%, #94a3b8 100%)',
+                            boxShadow: 'inset 0 0 10px rgba(255,255,255,0.8), 0 8px 15px rgba(0,0,0,0.2)'
+                        }}
                     >
-                        <Bot style={{ width: cellSize * 0.5, height: cellSize * 0.5 }} className="text-white" />
+                        {/* Eye visor */}
+                        <div className="absolute top-[30%] w-[60%] h-[20%] bg-slate-900 rounded-full overflow-hidden flex items-center justify-center">
+                            {/* Glowing eye */}
+                            <div className="w-[30%] h-[60%] bg-blue-400 rounded-full shadow-[0_0_8px_#60a5fa] animate-pulse" />
+                        </div>
+                        {/* Highlights */}
+                        <div className="absolute top-[10%] left-[20%] w-[30%] h-[20%] bg-white rounded-full blur-[1px] opacity-80" />
                     </motion.div>
                 )}
             </div>
@@ -190,36 +204,44 @@ export default function LogicRobot() {
                 </div>
 
                 {/* Game Map */}
-                <div className="w-full relative group p-1 bg-white rounded-[3rem] shadow-2xl border border-game-border">
-                    <div className="relative bg-[#fcfdfe] rounded-[2.5rem] overflow-auto custom-scrollbar p-6 max-h-[70vh]">
+                <div className="w-full relative group p-1 bg-white rounded-[3rem] shadow-2xl border border-game-border flex-1 min-h-0 flex items-center justify-center">
+                    <div className="relative bg-[#fcfdfe] rounded-[2.5rem] overflow-x-auto overflow-y-hidden custom-scrollbar p-4 max-w-full">
                         <div
-                            className="relative rounded-2xl overflow-hidden shadow-inner border border-slate-100 mx-auto"
+                            className="relative rounded-2xl overflow-hidden shadow-inner border border-slate-100 mx-auto w-max h-max"
                             style={{
-                                width: BOARD_WIDTH,
-                                height: BOARD_HEIGHT,
-                                backgroundImage: 'radial-gradient(circle, #f1f5f9 1px, transparent 1px)',
-                                backgroundSize: '58px 58px',
+                                backgroundImage: 'radial-gradient(circle, #e2e8f0 1.5px, transparent 1.5px)',
+                                backgroundSize: `${cellSize}px ${cellSize}px`,
                                 backgroundColor: '#fff'
                             }}
                         >
-                            <div className="grid h-full w-full" style={{ gridTemplateColumns: `repeat(${GRID_WIDTH}, 1fr)`, gridTemplateRows: `repeat(${GRID_HEIGHT}, 1fr)` }}>
+                            <div className="grid gap-1 p-3 sm:gap-[6px] sm:p-4 bg-slate-200/50 rounded-2xl shadow-inner" style={{ gridTemplateColumns: `repeat(${GRID_WIDTH}, max-content)`, gridTemplateRows: `repeat(${GRID_HEIGHT}, max-content)` }}>
                                 {grid.map((row, y) =>
-                                    row.map((cell, x) => (
-                                        <div
-                                            key={`${y}-${x}`}
-                                            className={`
-                                        transition-colors flex items-center justify-center
-                                        ${cell.type === 'PATH' ? 'bg-slate-50/50 border border-slate-100/50' :
-                                                    cell.type === 'TARGET' ? 'bg-emerald-50 border border-emerald-100' :
-                                                        cell.type === 'START' ? 'bg-blue-50 border border-blue-100' :
-                                                            cell.type === 'GRASS' ? 'bg-slate-200/10' :
-                                                                'bg-transparent'}
-                                    `}
-                                            style={{ width: cellSize, height: cellSize }}
-                                        >
-                                            {getCellContent(y, x)}
-                                        </div>
-                                    ))
+                                    row.map((cell, x) => {
+                                        // Determine rounded corners for path to look like a continuous channel
+                                        let roundedClass = 'rounded-md sm:rounded-xl';
+                                        if (cell.type === 'PATH' || cell.type === 'START' || cell.type === 'TARGET') {
+                                            roundedClass = 'rounded-sm';
+                                        }
+
+                                        const isAnchor = cell.type === 'BUILDING' && cell.isLarge && cell.isAnchor;
+
+                                        return (
+                                            <div
+                                                key={`${y}-${x}`}
+                                                className={`
+                                                transition-all duration-300 flex items-center justify-center relative ${roundedClass}
+                                                ${isAnchor ? 'z-20' : 'z-10'}
+                                                ${cell.type === 'PATH' ? 'bg-slate-300/80 shadow-[inset_0_4px_8px_rgba(0,0,0,0.1),0_0_10px_rgba(255,255,255,0.8)] border border-slate-400/50' :
+                                                        cell.type === 'TARGET' ? 'bg-emerald-100 shadow-[inset_0_4px_8px_rgba(16,185,129,0.1)] border border-emerald-300' :
+                                                            cell.type === 'START' ? 'bg-blue-100 shadow-[inset_0_4px_8px_rgba(59,130,246,0.1)] border border-blue-300' :
+                                                                'bg-emerald-50/60 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_2px_4px_rgba(0,0,0,0.02)] border border-emerald-100'}
+                                            `}
+                                                style={{ width: cellSize, height: cellSize }}
+                                            >
+                                                {getCellContent(y, x)}
+                                            </div>
+                                        )
+                                    })
                                 )}
                             </div>
                         </div>
@@ -269,53 +291,61 @@ export default function LogicRobot() {
                             </button>
                         </div>
 
-                        <div className="bg-slate-50/50 rounded-3xl p-3 border border-game-border min-h-[400px]">
-                            <div className="flex flex-col gap-2">
+                        <div className="bg-slate-50/50 rounded-3xl p-3 border border-game-border min-h-[360px] relative">
+                            <div className="grid grid-cols-2 gap-2 h-full content-start" style={{ gridTemplateRows: 'repeat(7, 44px)' }}>
                                 <AnimatePresence mode="popLayout">
                                     {instructions.map((inst, index) => (
                                         <motion.div
                                             key={inst.id}
                                             layout
-                                            initial={{ opacity: 0, x: -20 }}
+                                            initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{
                                                 opacity: 1,
-                                                x: 0,
+                                                scale: 1,
                                                 backgroundColor: currentInstructionIndex === index ? '#f0f9ff' : '#ffffff'
                                             }}
-                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            exit={{ opacity: 0, scale: 0.5 }}
+                                            style={{
+                                                gridColumn: Math.floor(index / 7) + 1,
+                                                gridRow: (index % 7) + 1
+                                            }}
                                             className={`
-                                        flex items-center gap-3 h-12 px-3 rounded-2xl border-2 transition-all
+                                        flex items-center justify-between h-11 px-2 rounded-xl border-2 transition-all overflow-hidden
                                         ${currentInstructionIndex === index ? 'border-game-accent shadow-md' : 'border-white shadow-sm hover:border-slate-100'}
                                     `}
                                         >
-                                            <div className="w-6 h-6 shrink-0 flex items-center justify-center bg-slate-50 rounded-lg text-[10px] font-black text-game-muted border border-slate-100">
-                                                {index + 1}
-                                            </div>
-                                            <div className="flex-1 flex items-center gap-3">
-                                                {inst.direction === 'UP' && <ArrowUp className={`w-4 h-4 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
-                                                {inst.direction === 'DOWN' && <ArrowDown className={`w-4 h-4 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
-                                                {inst.direction === 'LEFT' && <ArrowLeft className={`w-4 h-4 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
-                                                {inst.direction === 'RIGHT' && <ArrowRight className={`w-4 h-4 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
-                                                <span className={`text-xs font-black uppercase ${currentInstructionIndex === index ? 'text-game-text' : 'text-slate-500'}`}>{inst.direction}</span>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 bg-slate-50 rounded-xl px-2 py-1 border border-slate-100">
-                                                <button onClick={() => updateSteps(inst.id, -1)} disabled={isExecuting} className="text-slate-400 hover:text-game-text disabled:opacity-30 p-0.5"><ArrowDown className="w-3 h-3" /></button>
-                                                <span className="text-xs font-black text-game-text w-3 text-center">{inst.steps}</span>
-                                                <button onClick={() => updateSteps(inst.id, 1)} disabled={isExecuting} className="text-slate-400 hover:text-game-text disabled:opacity-30 p-0.5"><ArrowUp className="w-3 h-3" /></button>
+                                            <div className="flex items-center gap-1.5 min-w-0">
+                                                <div className="w-5 h-5 shrink-0 flex items-center justify-center bg-slate-50 roundedmd text-[9px] font-black text-game-muted border border-slate-100">
+                                                    {index + 1}
+                                                </div>
+                                                <div className="flex items-center gap-1 min-w-0">
+                                                    {inst.direction === 'UP' && <ArrowUp className={`w-3.5 h-3.5 shrink-0 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
+                                                    {inst.direction === 'DOWN' && <ArrowDown className={`w-3.5 h-3.5 shrink-0 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
+                                                    {inst.direction === 'LEFT' && <ArrowLeft className={`w-3.5 h-3.5 shrink-0 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
+                                                    {inst.direction === 'RIGHT' && <ArrowRight className={`w-3.5 h-3.5 shrink-0 ${currentInstructionIndex === index ? 'text-game-accent' : 'text-slate-400'}`} />}
+                                                    <span className={`text-[10px] font-black uppercase truncate ${currentInstructionIndex === index ? 'text-game-text' : 'text-slate-500'}`}>{inst.direction.substring(0, 1)}</span>
+                                                </div>
                                             </div>
 
-                                            <button onClick={() => removeInstruction(inst.id)} disabled={isExecuting} className="p-1.5 hover:bg-red-50 text-slate-300 hover:text-red-500 rounded-lg transition-colors disabled:opacity-30">
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center gap-1 shrink-0">
+                                                <div className="flex items-center gap-1 bg-slate-50 rounded-md px-1 py-0.5 border border-slate-100">
+                                                    <button onClick={() => updateSteps(inst.id, -1)} disabled={isExecuting} className="text-slate-400 hover:text-game-text disabled:opacity-30 p-0.5"><ArrowDown className="w-2.5 h-2.5" /></button>
+                                                    <span className="text-[10px] font-black text-game-text w-2 text-center">{inst.steps}</span>
+                                                    <button onClick={() => updateSteps(inst.id, 1)} disabled={isExecuting} className="text-slate-400 hover:text-game-text disabled:opacity-30 p-0.5"><ArrowUp className="w-2.5 h-2.5" /></button>
+                                                </div>
+
+                                                <button onClick={() => removeInstruction(inst.id)} disabled={isExecuting} className="p-1 hover:bg-red-50 text-slate-300 hover:text-red-500 rounded transition-colors disabled:opacity-30">
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
                                 {instructions.length === 0 && (
-                                    <div className="h-[360px] flex flex-col items-center justify-center text-center p-8">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
                                         <Bot className="w-12 h-12 text-slate-200 mb-4" />
                                         <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Buffer Empty</p>
-                                        <p className="text-[10px] text-slate-400 mt-1">Add movement tokens to begin programming</p>
+                                        <p className="text-[10px] text-slate-400 mt-1">Add movement tokens to begin</p>
                                     </div>
                                 )}
                             </div>

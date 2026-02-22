@@ -98,58 +98,76 @@ export default function GridWars() {
         </div>
 
         {/* Board */}
-        <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 md:gap-5 p-4 sm:p-8 bg-white rounded-[3rem] shadow-2xl border border-game-border">
-          <AnimatePresence mode="popLayout">
-            {cards.map((card) => {
-              const Icon = ICONS[card.type];
-              const isMatched = card.isMatched;
-              const isFlipped = card.isFlipped;
+        <div className="relative p-6 sm:p-10 w-full bg-slate-100 rounded-[3rem] shadow-inner border border-slate-200/50 flex justify-center items-center overflow-hidden">
+          {/* Subtle background gradient to simulate the studio light from the thumbnail */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none" />
 
-              return (
-                <motion.button
-                  key={card.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: !isFlipped && !isMatched ? 1.05 : 1 }}
-                  whileTap={{ scale: !isFlipped && !isMatched ? 0.95 : 1 }}
-                  onClick={() => handleCardClick(card.id)}
-                  className={`
-                    relative w-16 h-16 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl flex items-center justify-center
-                    transition-all duration-500 perspective-1000
-                    ${isFlipped || isMatched ? 'bg-white border-game-accent shadow-accent' : 'bg-slate-50 border-game-border hover:border-game-accent/30 shadow-sm'}
-                    border-[3px]
-                  `}
-                >
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    {/* Front (Hidden) */}
-                    <motion.div
-                      initial={false}
-                      animate={{ rotateY: isFlipped || isMatched ? 180 : 0, opacity: isFlipped || isMatched ? 0 : 1 }}
-                      transition={{ duration: 0.4 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-game-accent/5 border-2 border-game-accent/10 flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-game-accent/20" />
-                      </div>
-                    </motion.div>
+          <div className="relative z-10 grid grid-cols-4 sm:grid-cols-5 gap-4 md:gap-6 w-full max-w-2xl mx-auto">
+            <AnimatePresence mode="popLayout">
+              {cards.map((card) => {
+                const Icon = ICONS[card.type];
+                const isMatched = card.isMatched;
+                const isFlipped = card.isFlipped;
 
-                    {/* Back (Revealed) */}
-                    <motion.div
-                      initial={false}
-                      animate={{ rotateY: isFlipped || isMatched ? 0 : -180, opacity: isFlipped || isMatched ? 1 : 0 }}
-                      transition={{ duration: 0.4 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                      <div className={`p-4 rounded-2xl ${isMatched ? 'bg-emerald-50' : 'bg-game-accent/5'}`}>
-                        <Icon className={`w-8 h-8 sm:w-10 sm:h-10 ${isMatched ? 'text-emerald-500' : COLORS[card.type]}`} />
-                      </div>
-                    </motion.div>
-                  </div>
-                </motion.button>
-              );
-            })}
-          </AnimatePresence>
+                return (
+                  <motion.button
+                    key={card.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: !isFlipped && !isMatched ? 1.05 : 1, y: !isFlipped && !isMatched ? -4 : 0 }}
+                    whileTap={{ scale: !isFlipped && !isMatched ? 0.95 : 1 }}
+                    onClick={() => handleCardClick(card.id)}
+                    className="relative aspect-square w-full rounded-2xl sm:rounded-3xl flex items-center justify-center transition-all duration-500 perspective-1000"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.7)',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: isFlipped || isMatched
+                        ? 'inset 0 2px 4px rgba(255,255,255,0.8), inset 0 -4px 8px rgba(99, 102, 241, 0.1), 0 8px 16px rgba(0,0,0,0.05), 0 0 20px rgba(99, 102, 241, 0.2)'
+                        : 'inset 0 4px 6px rgba(255,255,255,0.9), inset 0 -4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.8)',
+                    }}
+                  >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      {/* Front (Hidden) */}
+                      <motion.div
+                        initial={false}
+                        animate={{ rotateY: isFlipped || isMatched ? 180 : 0, opacity: isFlipped || isMatched ? 0 : 1 }}
+                        transition={{ duration: 0.5, type: "spring", stiffness: 260, damping: 20 }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        <div className="w-1/3 h-1/3 rounded-full border-[3px] border-slate-200/50 flex items-center justify-center opacity-30 shadow-inner">
+                        </div>
+                      </motion.div>
+
+                      {/* Back (Revealed) */}
+                      <motion.div
+                        initial={false}
+                        animate={{ rotateY: isFlipped || isMatched ? 0 : -180, opacity: isFlipped || isMatched ? 1 : 0 }}
+                        transition={{ duration: 0.5, type: "spring", stiffness: 260, damping: 20 }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        <div
+                          className="absolute inset-0 m-auto flex items-center justify-center transition-all duration-300"
+                          style={{
+                            filter: isMatched ? 'drop-shadow(0 0 12px rgba(16,185,129,0.4))' : 'drop-shadow(0 4px 6px rgba(99,102,241,0.3))'
+                          }}
+                        >
+                          <Icon
+                            className={`w-1/2 h-1/2 ${isMatched ? 'text-emerald-500' : typeof COLORS[card.type] === 'string' ? COLORS[card.type] : 'text-indigo-500'}`}
+                            style={{
+                              strokeWidth: 2.5,
+                              color: isMatched ? '#10b981' : '#4f46e5'
+                            }}
+                          />
+                        </div>
+                      </motion.div>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Game Over Overlay */}

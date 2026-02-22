@@ -120,14 +120,25 @@ export function useTowerDefenseEngine() {
 
     const gameTick = useCallback((timestamp: number) => {
         if (!gameActive || gameOver) return;
+
+        if (lastTickRef.current === 0) {
+            lastTickRef.current = timestamp;
+        }
+
+        const delta = timestamp - lastTickRef.current;
         lastTickRef.current = timestamp;
+
+        // dt is 1.0 at 60 FPS (16.66ms per frame). Cap at 3 for lag spikes.
+        const dt = Math.min(delta, 50) / 16.666;
 
         setEnemies(prevEnemies => {
             const updatedEnemies: Enemy[] = [];
             let healthLost = 0;
 
             prevEnemies.forEach(enemy => {
-                const nextIdx = enemy.pathIndex + enemy.speed * 10;
+                // Apply dt to speed so it moves exactly the same distance over time regardless of framerate
+                const nextIdx = enemy.pathIndex + (enemy.speed * 10) * dt;
+
                 if (nextIdx >= path.length * 10) {
                     healthLost += 1;
                 } else if (enemy.health > 0) {
@@ -156,8 +167,10 @@ export function useTowerDefenseEngine() {
             return updatedEnemies;
         });
 
-        const currentCooldown = 150;
-        const currentProjSpeed = 0.25;
+        // Use a 500ms cooldown for visible strategic pacing
+        const currentCooldown = 500;
+        // Reduce projectile speed significantly so the laser is visible for longer
+        const currentProjSpeed = 0.05 * dt;
 
         setTowers(prevTowers => {
             const newTowers = [...prevTowers];
@@ -211,10 +224,10 @@ export function useTowerDefenseEngine() {
                 newEnemies.push({
                     id: enemyIdCounter.current++,
                     pos: { ...path[0] },
-                    pathIndex: -i * 3,
+                    pathIndex: -i * 10, // Staggered entry (1 full cell apart)
                     health: 30 + wave * 15,
                     maxHealth: 30 + wave * 15,
-                    speed: 0.05 + (Math.random() * 0.02),
+                    speed: 0.025, // Constant speed to prevent catching up and overlapping
                 });
             }
             setEnemies(newEnemies);

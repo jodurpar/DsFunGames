@@ -165,26 +165,116 @@ export default function HexConquest() {
         </div>
 
         {/* Board */}
-        <div className="relative p-1 bg-white rounded-[3.5rem] shadow-2xl border border-game-border">
-          <div className="grid grid-cols-5 gap-3 sm:gap-4 bg-slate-50/50 p-6 sm:p-10 rounded-[3rem]">
-            {grid.map((cell, index) => (
-              <motion.button
-                key={index}
-                whileHover={{ scale: !cell && !gameOver ? 1.05 : 1 }}
-                whileTap={{ scale: !cell && !gameOver ? 0.95 : 1 }}
-                onClick={() => handleCellClick(index)}
-                className={`
-                  w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl transition-all duration-500 flex items-center justify-center
-                  border-[3px]
-                  ${cell === 'player' ? 'bg-game-accent border-white shadow-xl shadow-game-accent/20' :
-                    cell === 'ai' ? 'bg-red-500 border-white shadow-xl shadow-red-500/20' :
-                      'bg-white border-game-border hover:border-game-accent/30 shadow-sm'}
-                `}
-              >
-                {cell === 'player' && <div className="w-3 h-3 sm:w-4 sm:h-4 bg-white/40 rounded-full animate-pulse" />}
-                {cell === 'ai' && <div className="w-3 h-3 sm:w-4 sm:h-4 bg-white/40 rounded-full" />}
-              </motion.button>
-            ))}
+        <div className="relative p-2 sm:p-4 bg-white rounded-[3.5rem] shadow-2xl border border-game-border w-full flex items-center justify-center">
+          <style>
+            {`
+              .hex-container {
+                --hex-w: 60px;
+                --hex-h: 70px;
+                --hex-gap: 6px;
+                --offset-x: calc((var(--hex-w) + var(--hex-gap)) / 2);
+                --offset-y: calc(var(--hex-h) * -0.23);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem;
+              }
+              @media (min-width: 640px) {
+                .hex-container {
+                  --hex-w: 86px;
+                  --hex-h: 100px;
+                  --hex-gap: 8px;
+                }
+              }
+              .hex-row {
+                display: flex;
+                gap: var(--hex-gap);
+              }
+              .hex-row + .hex-row {
+                margin-top: var(--offset-y);
+              }
+              .hex-row.is-odd {
+                margin-left: calc(var(--hex-w) + var(--hex-gap));
+              }
+              .hex-polygon {
+                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+              }
+              .hex-shadow {
+                filter: drop-shadow(0 4px 4px rgba(0,0,0,0.08)) drop-shadow(0 8px 8px rgba(0,0,0,0.04));
+              }
+            `}
+          </style>
+
+          <div className="bg-slate-50/50 rounded-[3rem] w-full overflow-x-auto custom-scrollbar flex justify-center">
+            <div className="hex-container min-w-max">
+              {Array.from({ length: 5 }).map((_, row) => (
+                <div key={row} className={`hex-row ${row % 2 !== 0 ? 'is-odd' : ''}`}>
+                  {Array.from({ length: 5 }).map((_, col) => {
+                    const index = row * 5 + col;
+                    const cell = grid[index];
+                    return (
+                      <div key={col} className="hex-shadow relative cursor-pointer" onClick={() => handleCellClick(index)}>
+                        <motion.button
+                          whileHover={{ scale: !cell && !gameOver ? 1.05 : 1, y: !cell && !gameOver ? -2 : 0 }}
+                          whileTap={{ scale: !cell && !gameOver ? 0.95 : 1 }}
+                          className={`
+                            hex-polygon transition-all duration-500 flex items-center justify-center relative
+                            ${cell === 'player' ? 'bg-indigo-600' :
+                              cell === 'ai' ? 'bg-rose-500' :
+                                'bg-white hover:bg-slate-50'}
+                          `}
+                          style={{
+                            width: 'var(--hex-w)',
+                            height: 'var(--hex-h)',
+                            background: cell === 'player' ? 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)' :
+                              cell === 'ai' ? 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)' :
+                                'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                            boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -4px 8px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          {/* Inner Bevel highlighting for the hexagon feel */}
+                          <div
+                            className="absolute inset-[2px] opacity-50 hex-polygon pointer-events-none"
+                            style={{
+                              background: cell ? 'none' : 'linear-gradient(180deg, #ffffff 0%, transparent 100%)'
+                            }}
+                          />
+
+                          {/* Glass Sphere for Pieces */}
+                          <AnimatePresence>
+                            {cell && (
+                              <motion.div
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="absolute z-10 rounded-full flex items-center justify-center pointer-events-none"
+                                style={{
+                                  width: '45%',
+                                  height: '45%',
+                                  background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, rgba(255,255,255,0.1) 60%, rgba(0,0,0,0.2) 100%)',
+                                  boxShadow: `
+                                    inset 0 0 10px rgba(255,255,255,0.5),
+                                    0 8px 12px rgba(0,0,0,0.3),
+                                    0 12px 20px rgba(0,0,0,0.2)
+                                  `,
+                                  backdropFilter: 'blur(4px)'
+                                }}
+                              >
+                                {/* Core highlight of the sphere */}
+                                <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] bg-white rounded-full blur-[1px] opacity-80" />
+                                {/* Bottom bounce light */}
+                                <div className="absolute bottom-[10%] right-[20%] w-[40%] h-[20%] bg-white rounded-full blur-[3px] opacity-30 rotate-[-45deg]" />
+                                {/* Under-sphere colored shadow cast on the hex */}
+                                <div className="absolute -bottom-2 w-[80%] h-[30%] bg-black/40 rounded-full blur-[4px] -z-10" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.button>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
 
           <AnimatePresence>
