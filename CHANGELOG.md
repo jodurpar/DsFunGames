@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - 2026-02-22
 
 ### Added
+- **Documentation**: Added a direct link to the production test environment in the README.
 - **Tower Defense Lite**: Added a 3D HTML Red Tower model to explicitly represent the destination base.
 - **Tower Defense Lite**: Added an Emerald Glowing Portal to represent the enemy spawning origin point.
 - **Resumen**: Appended recent changes to `resumen.2026-02-22.md`.
