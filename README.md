@@ -1,6 +1,10 @@
-# DsFunGames - Tactical Hub
+<p align="center">
+  <img src="./public/logo.png" alt="FunGames Tactical Hub" width="200" />
+</p>
 
-DsFunGames is a premium suite of minimalist strategy and logic games designed for modern commanders. It combines high-intensity logic with a sleek, tactical aesthetic.
+# FunGames - Tactical Hub
+
+FunGames is a premium suite of minimalist strategy and logic games designed for modern commanders. It combines high-intensity logic with a sleek, tactical aesthetic.
 
 **Test Page**: [https://dsfungames.scifyclub.com/](https://dsfungames.scifyclub.com/)
 
