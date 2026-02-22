@@ -170,46 +170,46 @@ export default function GridWars() {
               })}
             </AnimatePresence>
           </div>
+
+          {/* Game Over Overlay moved inside the board container */}
+          <AnimatePresence>
+            {gameOver && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-50 bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center rounded-[3rem]"
+              >
+                <div className="bg-game-accent/5 p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-2 border-game-accent/10 mb-6 sm:mb-10 shadow-2xl shadow-game-accent/10">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-game-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                    <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-game-accent" />
+                  </div>
+                  <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mb-2 sm:mb-4 tracking-tighter uppercase italic text-nowrap">{t('gridWars.complete')}</h2>
+                  <div className="text-game-muted font-medium max-w-xs mx-auto text-xs sm:text-sm leading-relaxed">
+                    <Trans i18nKey="gridWars.completeDesc" values={{ count: moves }}>
+                      Field cleared with high efficiency in <span className="text-game-accent font-bold">{moves} tactical moves</span>.
+                    </Trans>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm px-4">
+                  <button
+                    onClick={initializeGame}
+                    className="premium-button flex-1 flex items-center justify-center gap-2 sm:gap-3 bg-game-accent hover:bg-game-accent-light text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black shadow-accent transition-all text-xs sm:text-sm"
+                  >
+                    <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5" /> {t('gridWars.newMission')}
+                  </button>
+                  <Link
+                    to="/"
+                    className="premium-button flex-1 flex items-center justify-center gap-2 sm:gap-3 bg-slate-50 hover:bg-slate-100 text-game-text px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black border border-game-border transition-all text-xs sm:text-sm"
+                  >
+                    {t('gridWars.abort')}
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-        {/* Game Over Overlay */}
-        <AnimatePresence>
-          {gameOver && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center"
-            >
-              <div className="bg-game-accent/5 p-10 rounded-[3rem] border-2 border-game-accent/10 mb-10 shadow-2xl shadow-game-accent/10">
-                <div className="w-20 h-20 bg-game-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <Trophy className="w-10 h-10 text-game-accent" />
-                </div>
-                <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic text-nowrap">{t('gridWars.complete')}</h2>
-                <div className="text-game-muted font-medium max-w-xs mx-auto leading-relaxed">
-                  <Trans i18nKey="gridWars.completeDesc" values={{ count: moves }}>
-                    Field cleared with high efficiency in <span className="text-game-accent font-bold">{moves} tactical moves</span>.
-                  </Trans>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm px-4">
-                <button
-                  onClick={initializeGame}
-                  className="premium-button flex-1 flex items-center justify-center gap-3 bg-game-accent hover:bg-game-accent-light text-white px-8 py-4 rounded-2xl font-black shadow-accent transition-all"
-                >
-                  <RefreshCw className="w-5 h-5" /> {t('gridWars.newMission')}
-                </button>
-                <Link
-                  to="/"
-                  className="premium-button flex-1 flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-game-text px-8 py-4 rounded-2xl font-black border border-game-border transition-all"
-                >
-                  {t('gridWars.abort')}
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

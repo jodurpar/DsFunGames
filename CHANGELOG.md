@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-02-22
+
+### Fixed
+- **Grid Wars (UI)**: Corregida la consistencia del popup de "Misión Completa". Ahora se muestra como un overlay sobre el tablero (manteniendo visibles las estadísticas y la guía lateral) en lugar de sustituir todo el contenido de la pantalla.
+
 ## [1.0.9] - 2026-02-22
 
 ### Fixed
