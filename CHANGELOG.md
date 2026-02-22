@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-02-22
+
+### Added
+- **Documentation**: Finalized comprehensive technical documentation and project summary for the February 22nd modernization phase.
+
+### Fixed
+- **Local Infrastructure**: Resolved port mapping conflicts and fully deployed the production container on the standard tactical port 15260.
+
 ## [1.1.0] - 2026-02-22
 
 ### Fixed

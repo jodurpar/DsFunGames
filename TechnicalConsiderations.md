@@ -38,12 +38,22 @@ I have implemented several lightweight 2D strategy games using DOM manipulation 
 - Lazy loading injection system for game components.
 - Integrated `OrientationGuard` to enforce landscape mode on mobile devices for complex tactical games.
 
+### 🔍 SEO & Visibility (`src/hooks/useSEO.ts`)
+- Custom hook for dynamic `<head>` injection of titles, descriptions, and Open Graph/Twitter tags.
+- Optimized for social sharing and search engine indexing.
+- Includes `sitemap.xml` and `robots.txt` configuration in the `public/` directory.
+
+### 🧠 Logic Refactoring & State Management
+- **Decoupled Engines**: Game logic has been extracted into pure TypeScript modules (`logic.ts`) to improve testability and separate concerns.
+- **Global State**: Integrated with **Zustand** (`src/store/gameStore.ts`) to manage persistent user data, cross-game statistics, and high scores.
+- **Unit Testing**: 100% coverage on core game mechanics using Vitest.
+
 ## 🐳 Docker Architecture
 
 The project is fully containerized for production deployment using a multi-stage build:
 1. **Build Stage:** Uses `node:alpine` to meticulously compile the Vite/React application into static assets.
 2. **Production Stage:** Uses `nginx:alpine` to serve the static files with a custom `nginx.conf` that handles SPA routing and asset caching optimizations.
-- Handled via `docker-compose.yml` exposing port `15260`.
+- Handled via `Dockerfile` and `docker-compose.yml` exposing port `15260`.
 
 ---
 
