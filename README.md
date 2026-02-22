@@ -1,69 +1,60 @@
-# DsFunGames 🎮
+# DsFunGames - Tactical Hub
 
-## Descripción
-DsFunGames es una plataforma web moderna de juegos de estrategia y puzles ligeros en 2D, construida con React y diseñada con una estética minimalista y profesional. La plataforma ofrece una experiencia de usuario fluida con una interfaz "Modern Light" optimizada tanto para escritorio como para dispositivos móviles.
+DsFunGames is a premium suite of minimalist strategy and logic games designed for modern commanders. It combines high-intensity logic with a sleek, tactical aesthetic.
 
-## 🕹️ Juegos Disponibles
+## 🚀 Experience the Future of Strategy
 
-### 1. Hex Conquest
-Un juego de estrategia por turnos en una cuadrícula hexagonal. Captura territorio, expande tu influencia y domina el mapa.
-- **Categoría:** Estrategia
-- **Dificultad:** Media
+Access curated tactical simulations featuring precision gameplay and immersive visual effects. 
 
-### 2. Tower Defense Lite
-Defiende tu base contra oleadas de enemigos. Gestiona tus recursos, coloca torres tácticas y sobrevive a la invasión.
-- **Categoría:** Estrategia
-- **Dificultad:** Difícil
+### 🎮 Available Missions
 
-### 3. Grid Wars
-Combate táctico en cuadrícula inspirado en clásicos como el ajedrez. Supera a tu oponente mediante movimientos precisos y estrategia pura.
-- **Categoría:** Estrategia
-- **Dificultad:** Media
-- **Modo:** 2 Jugadores (Local)
+*   **Tower Defense Lite**: Establish defensive perimeters and neutralize incoming opposition waves.
+*   **Logic Robot**: Program tactical units using direction tokens to navigate complex urban grids.
+*   **Grid Wars**: A chess-inspired tactical memory game to identify and secure hidden units.
+*   **Hex Conquest**: Territorial capture simulation on a hexagonal grid against an adaptive AI.
 
-### 4. Logic Robot
-Programa a tu robot para navegar por una ciudad dinámica. Evita obstáculos, optimiza tu ruta y llega al edificio objetivo.
-- **Categoría:** Puzle
-- **Dificultad:** Media
+## 🛠️ Tactical Features
 
-## 🚀 Tecnologías Utilizadas
-- **Core:** [React 19](https://react.dev/)
-- **Logic:** TypeScript & Custom Hooks Engines
-- **Styling:** CSS Moderno (Variables, Flexbox, Grid)
-- **Animations:** [Motion](https://www.framer.com/motion/)
-- **Build Tool:** [Vite](https://vitejs.dev/)
-- **Icons:** [Lucide React](https://lucide.dev/)
+*   **Multi-Language Support (i18n)**: Fully localized in English and Spanish with persistent user preferences.
+*   **Adaptive UI**: Dynamic headers and footers that maximize gameplay area across all devices.
+*   **Mobile Optimized**: Selective orientation locking for complex tactical environments.
+*   **Interactive Simulation**: Realistic pathfinding, logical buffering, and real-time combat stats.
 
-## 🛠️ Instalación y Desarrollo Local
+## 💻 Technical Infrastructure
 
-**Requisitos previos:** Node.js (v18+)
+Built with a state-of-the-art stack for maximum performance:
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/jodurpar/dsfungames.git
-   cd dsfungames
-   ```
+*   **Core**: React + TypeScript
+*   **Styling**: Tailwind CSS for responsive tactical designs.
+*   **Animations**: Motion (framer-motion) for fluid unit transitions.
+*   **I18n**: i18next + react-i18next for global operation support.
+*   **Build Tool**: Vite for rapid deployment.
 
-2. **Instalar dependencias:**
-   ```bash
-   npm install
-   ```
+## 🏗️ Development
 
-3. **Configurar variables de entorno:**
-   Crea un archivo `.env.local` basado en `.env.example`.
+### Prerequisites
+- Node.js (Latest LTS recommended)
+- npm or pnpm
 
-4. **Ejecutar en modo desarrollo:**
-   ```bash
-   npm run dev
-   ```
+### Setup
+```bash
+# Install dependencies
+npm install
 
-5. **Construir para producción:**
-   ```bash
-   npm run build
-   ```
+# Start local tactical hub
+npm run dev
+```
 
-## 📄 Licencia
-Este proyecto es privado. Todos los derechos reservados.
+### Build for Deployment
+```bash
+npm run build
+```
+
+## 📜 Documentation
+
+For detailed technical specs and development history, refer to:
+- `CHANGELOG.md`: Detailed mission logs and updates.
+- `ConsideracionesTecnicas.md`: Core logic and architecture overview.
 
 ---
-© 2026 DsFunGames - Desarrollado por **jodurpar**
+© 2026 Strategy Gaming Studio. All signals encrypted.
