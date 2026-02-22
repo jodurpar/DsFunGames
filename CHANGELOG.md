@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2026-02-22
+
+### Fixed
+- **Grid Wars (Tactical Memory)**: Resolved a critical infinite loop bug where the movement counter would increment continuously after the first move due to incorrect `useEffect` dependencies.
+
 ## [1.0.8] - 2026-02-22
 
 ### Added

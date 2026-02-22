@@ -84,7 +84,7 @@ export function useTacticalMemoryEngine() {
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [flippedCards, cards, moves, incrementWins, updateHighScore]);
+    }, [flippedCards, cards, incrementWins, updateHighScore]);
 
     return {
         state: {
