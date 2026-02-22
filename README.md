@@ -65,4 +65,4 @@ For detailed technical specs and development history, refer to:
 - `TechnicalConsiderations.md`: Core logic, architectural decisions, and containerization overview.
 
 ---
-© 2026 Strategy Gaming Studio. All signals encrypted.
+© 2026 DuranSoftware - Strategy Gaming Studio. All signals encrypted.
