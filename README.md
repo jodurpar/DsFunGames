@@ -28,13 +28,14 @@ Built with a state-of-the-art stack for maximum performance:
 *   **Styling**: Tailwind CSS for responsive tactical designs.
 *   **Animations**: Motion (framer-motion) for fluid unit transitions.
 *   **I18n**: i18next + react-i18next for global operation support.
-*   **Build Tool**: Vite for rapid deployment.
+*   **Testing**: Vitest + React Testing Library for component quality assurance.
+*   **Deployment**: Fully containerized using Docker (Multi-stage build).
 
 ## 🏗️ Development
 
 ### Prerequisites
 - Node.js (Latest LTS recommended)
-- npm or pnpm
+- Docker Desktop (for containerization)
 
 ### Setup
 ```bash
@@ -45,16 +46,23 @@ npm install
 npm run dev
 ```
 
-### Build for Deployment
+### 🧪 Quality Assurance
 ```bash
-npm run build
+# Run unit and integration tests
+npm run test
+```
+
+### 🐳 Docker Deployment
+```bash
+# Build and deploy the production container (port 15260)
+docker-compose up -d --build
 ```
 
 ## 📜 Documentation
 
 For detailed technical specs and development history, refer to:
 - `CHANGELOG.md`: Detailed mission logs and updates.
-- `ConsideracionesTecnicas.md`: Core logic and architecture overview.
+- `TechnicalConsiderations.md`: Core logic, architectural decisions, and containerization overview.
 
 ---
 © 2026 Strategy Gaming Studio. All signals encrypted.
