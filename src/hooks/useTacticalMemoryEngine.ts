@@ -1,14 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
-import { GameMath } from '../core/engine';
+import { useGameStore } from '../store/gameStore';
+import { MemoryLogic, Card, CardType } from '../games/tactical-memory/logic';
 
-export type CardType = 'tank' | 'infantry' | 'artillery' | 'air' | 'special';
+export type { Card, CardType };
 
-export interface Card {
-    id: number;
-    type: CardType;
-    isFlipped: boolean;
-    isMatched: boolean;
-}
+const GAME_ID = 'tactical-memory';
 
 export function useTacticalMemoryEngine() {
     const [cards, setCards] = useState<Card[]>([]);
@@ -17,33 +13,20 @@ export function useTacticalMemoryEngine() {
     const [matches, setMatches] = useState(0);
     const [gameOver, setGameOver] = useState(false);
 
+    // Global Store Actions
+    const updateHighScore = useGameStore(state => state.updateHighScore);
+    const incrementWins = useGameStore(state => state.incrementWins);
+    const incrementPlays = useGameStore(state => state.incrementPlays);
+
     const initializeGame = useCallback(() => {
-        const types: CardType[] = ['tank', 'infantry', 'artillery', 'air', 'special'];
-        const deck: Card[] = [];
-
-        // Create 2 pairs of each type = 20 cards
-        types.forEach(type => {
-            for (let i = 0; i < 4; i++) {
-                deck.push({
-                    id: Math.random(),
-                    type,
-                    isFlipped: false,
-                    isMatched: false,
-                });
-            }
-        });
-
-        // Shuffle and normalize IDs
-        const shuffled = deck
-            .sort(() => Math.random() - 0.5)
-            .map((card, index) => ({ ...card, id: index }));
-
+        const shuffled = MemoryLogic.generateDeck();
         setCards(shuffled);
         setFlippedCards([]);
         setMoves(0);
         setMatches(0);
         setGameOver(false);
-    }, []);
+        incrementPlays(GAME_ID);
+    }, [incrementPlays]);
 
     const handleCardClick = useCallback((id: number) => {
         if (flippedCards.length === 2 || cards[id].isFlipped || cards[id].isMatched || gameOver) return;
@@ -67,7 +50,7 @@ export function useTacticalMemoryEngine() {
 
         setMoves(m => m + 1);
 
-        if (card1.type === card2.type) {
+        if (MemoryLogic.checkMatch(card1, card2)) {
             // Match found
             const timer = setTimeout(() => {
                 setCards(prev => prev.map(card =>
@@ -78,7 +61,13 @@ export function useTacticalMemoryEngine() {
                 setFlippedCards([]);
                 setMatches(m => {
                     const newMatches = m + 1;
-                    if (newMatches === 10) setGameOver(true);
+                    if (newMatches === 10) {
+                        setGameOver(true);
+                        incrementWins(GAME_ID);
+                        // Lower moves is a higher score essentially, we save the lowest amount of moves as the highscore
+                        // For leaderboard sorting purposes, we update highscore if currenthighscore is 0, or if its less moves
+                        updateHighScore(GAME_ID, moves + 1);
+                    }
                     return newMatches;
                 });
             }, 500);
@@ -95,7 +84,7 @@ export function useTacticalMemoryEngine() {
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [flippedCards, cards]);
+    }, [flippedCards, cards, moves, incrementWins, updateHighScore]);
 
     return {
         state: {

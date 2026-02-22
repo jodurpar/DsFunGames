@@ -5,6 +5,10 @@ import { RefreshCw, Trophy, Skull } from 'lucide-react';
 import { useTurnBasedSystem } from '../hooks/useTurnBasedSystem';
 import { Owner } from '../core/engine';
 import { useTranslation } from 'react-i18next';
+import { useGameStore } from '../store/gameStore';
+import { HexLogic } from './hex-conquest/logic';
+
+const GAME_ID = 'hex-conquest';
 
 export default function HexConquest() {
   const { t } = useTranslation();
@@ -24,6 +28,11 @@ export default function HexConquest() {
   const isPlayerTurn = turn === 'player';
   const gameOver = status === 'gameover';
 
+  // Global Store Actions
+  const updateHighScore = useGameStore(state => state.updateHighScore);
+  const incrementWins = useGameStore(state => state.incrementWins);
+  const incrementPlays = useGameStore(state => state.incrementPlays);
+
   const handleCellClick = (index: number) => {
     if (grid[index] || !isPlayerTurn || gameOver) return;
 
@@ -37,10 +46,9 @@ export default function HexConquest() {
   useEffect(() => {
     if (turn === 'ai' && !gameOver && status === 'playing') {
       const timeout = setTimeout(() => {
-        const availableMoves = grid.map((cell, idx) => cell === null ? idx : null).filter(val => val !== null) as number[];
+        const randomMove = HexLogic.calculateRandomMove(grid);
 
-        if (availableMoves.length > 0) {
-          const randomMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+        if (randomMove !== null) {
           const newGrid = [...grid];
           newGrid[randomMove] = 'ai';
           setGrid(newGrid);
@@ -56,16 +64,16 @@ export default function HexConquest() {
   useEffect(() => {
     if (status !== 'playing') return;
 
-    const isFull = grid.every(cell => cell !== null);
+    const { isFull, winner: resultWinner } = HexLogic.checkGameOver(grid);
     if (isFull) {
-      const playerScore = grid.filter(c => c === 'player').length;
-      const aiScore = grid.filter(c => c === 'ai').length;
-
-      if (playerScore > aiScore) actions.endBattle('player');
-      else if (aiScore > playerScore) actions.endBattle('ai');
-      else actions.endBattle('draw');
+      if (resultWinner === 'player') {
+        const playerScore = grid.filter(c => c === 'player').length;
+        updateHighScore(GAME_ID, playerScore * 100);
+        incrementWins(GAME_ID);
+      }
+      actions.endBattle(resultWinner as Owner | 'draw');
     }
-  }, [grid, status, actions]);
+  }, [grid, status, actions, updateHighScore, incrementWins]);
 
   const resetGame = useCallback(() => {
     actions.setGameState({
@@ -73,7 +81,8 @@ export default function HexConquest() {
       winner: null,
       score: { player: 0, ai: 0, grid: Array(GRID_SIZE).fill(null) as any }
     });
-  }, [actions, GRID_SIZE]);
+    incrementPlays(GAME_ID);
+  }, [actions, GRID_SIZE, incrementPlays]);
 
   // Initial Start
   useEffect(() => {

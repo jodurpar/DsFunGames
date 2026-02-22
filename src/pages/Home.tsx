@@ -3,9 +3,18 @@ import { motion } from 'motion/react';
 import { Play } from 'lucide-react';
 import { GAMES } from '../data/games';
 import { useTranslation } from 'react-i18next';
+import { useSEO } from '../hooks/useSEO';
 
 export default function Home() {
   const { t } = useTranslation();
+
+  useSEO({
+    title: `DsFunGames - Tactical Hub | Play Strategy Browser Games`,
+    description: `DsFunGames - The ultimate hub for single-player browser tactic and strategy games. Play Tower Defense, Hex Conquest, Logic Robot, and Grid Wars directly on your web browser without downloads.`,
+    keywords: "html5 games, browser games, strategy games, tower defense, logic games, turn based strategy, grid wars, react games, dsfungames",
+    url: "https://fungames.tacticalhub.com/",
+    image: "/favicon.png"
+  });
 
   return (
     <div className="space-y-12 sm:space-y-20">

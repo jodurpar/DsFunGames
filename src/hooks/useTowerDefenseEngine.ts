@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { TDLogic } from '../games/tower-defense/logic';
+import { useGameStore } from '../store/gameStore';
 
 export interface Position {
     x: number;
@@ -33,43 +35,14 @@ export const GRID_WIDTH = 10;
 export const GRID_HEIGHT = 8;
 export const CELL_SIZE = 60;
 export const TOWER_COST = 50;
+const GAME_ID = 'tower-defense-lite';
 
-function generateRandomPath(width: number, height: number): Position[] {
-    const path: Position[] = [];
-    let curX = 0;
-    let curY = Math.floor(Math.random() * (height - 4)) + 2; // Keep away from top/bottom edges
-
-    path.push({ x: curX, y: curY });
-
-    while (curX < width - 1) {
-        // Randomly decide to move right
-        const rightSteps = Math.floor(Math.random() * 2) + 1;
-        for (let i = 0; i < rightSteps && curX < width - 1; i++) {
-            curX++;
-            path.push({ x: curX, y: curY });
-        }
-
-        if (curX < width - 1) {
-            // Randomly decide to move up or down
-            const moveY = Math.random() > 0.5 ? 1 : -1;
-            const ySteps = Math.floor(Math.random() * 2) + 1;
-            for (let i = 0; i < ySteps; i++) {
-                const nextY = curY + moveY;
-                // Keep path within bounds and avoid making it too complex
-                if (nextY >= 1 && nextY < height - 1) {
-                    curY = nextY;
-                    path.push({ x: curX, y: curY });
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-    return path;
-}
-
+/**
+ * Hook to manage the Tower Defense game engine.
+ * recommendation 2: Refactored using TDLogic helper.
+ */
 export function useTowerDefenseEngine() {
-    const [path, setPath] = useState<Position[]>(() => generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
+    const [path, setPath] = useState<Position[]>(() => TDLogic.generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
     const [enemies, setEnemies] = useState<Enemy[]>([]);
     const [towers, setTowers] = useState<Tower[]>([]);
     const [projectiles, setProjectiles] = useState<Projectile[]>([]);
@@ -78,6 +51,12 @@ export function useTowerDefenseEngine() {
     const [wave, setWave] = useState(0);
     const [gameActive, setGameActive] = useState(false);
     const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
+
+    // Global Store Actions
+    const updateHighScore = useGameStore(state => state.updateHighScore);
+    const incrementWins = useGameStore(state => state.incrementWins);
+    const incrementPlays = useGameStore(state => state.incrementPlays);
 
     const gameLoopRef = useRef<number | null>(null);
     const lastTickRef = useRef<number>(0);
@@ -102,20 +81,24 @@ export function useTowerDefenseEngine() {
     };
 
     const resetGame = () => {
-        setPath(generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
+        setPath(TDLogic.generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
         setEnemies([]);
         setTowers([]);
         setProjectiles([]);
         setMoney(150);
         setHealth(20);
         setWave(0);
+        setScore(0);
         setGameActive(false);
         setGameOver(false);
         lastTickRef.current = 0;
     };
 
     const startNextWave = () => {
-        if (wave === 0) setWave(1);
+        if (wave === 0) {
+            setWave(1);
+            incrementPlays(GAME_ID);
+        }
     };
 
     const gameTick = useCallback((timestamp: number) => {
@@ -136,22 +119,15 @@ export function useTowerDefenseEngine() {
             let healthLost = 0;
 
             prevEnemies.forEach(enemy => {
-                // Apply dt to speed so it moves exactly the same distance over time regardless of framerate
                 const nextIdx = enemy.pathIndex + (enemy.speed * 10) * dt;
 
                 if (nextIdx >= path.length * 10) {
                     healthLost += 1;
                 } else if (enemy.health > 0) {
-                    const currentPathStep = Math.max(0, Math.floor(enemy.pathIndex / 10));
-                    const nextPathStep = Math.min(path.length - 1, currentPathStep + 1);
-                    const t = (enemy.pathIndex % 10) / 10;
-
-                    const posX = path[currentPathStep].x + (path[nextPathStep].x - path[currentPathStep].x) * t;
-                    const posY = path[currentPathStep].y + (path[nextPathStep].y - path[currentPathStep].y) * t;
-
+                    const pos = TDLogic.calculateEnemyPosition(path, nextIdx);
                     updatedEnemies.push({
                         ...enemy,
-                        pos: { x: posX, y: posY },
+                        pos,
                         pathIndex: nextIdx,
                     });
                 }
@@ -160,16 +136,17 @@ export function useTowerDefenseEngine() {
             if (healthLost > 0) {
                 setHealth(h => {
                     const newH = Math.max(0, h - healthLost);
-                    if (newH === 0) setGameOver(true);
+                    if (newH === 0) {
+                        setGameOver(true);
+                        updateHighScore(GAME_ID, score);
+                    }
                     return newH;
                 });
             }
             return updatedEnemies;
         });
 
-        // Use a 500ms cooldown for visible strategic pacing
         const currentCooldown = 500;
-        // Reduce projectile speed significantly so the laser is visible for longer
         const currentProjSpeed = 0.05 * dt;
 
         setTowers(prevTowers => {
@@ -180,8 +157,7 @@ export function useTowerDefenseEngine() {
                 if (timestamp - tower.lastShot < currentCooldown) return;
 
                 const target = enemies.find(e => {
-                    const dist = Math.sqrt(Math.pow(e.pos.x - tower.pos.x, 2) + Math.pow(e.pos.y - tower.pos.y, 2));
-                    return dist <= tower.range && e.pathIndex >= 0;
+                    return TDLogic.isInRange(e.pos, tower.pos, tower.range) && e.pathIndex >= 0;
                 });
 
                 if (target) {
@@ -196,7 +172,10 @@ export function useTowerDefenseEngine() {
                     setEnemies(prev => prev.map(e => {
                         if (e.id === target.id) {
                             const newH = e.health - tower.damage;
-                            if (newH <= 0) setMoney(m => m + 15);
+                            if (newH <= 0) {
+                                setMoney(m => m + 15);
+                                setScore(s => s + 10);
+                            }
                             return { ...e, health: newH };
                         }
                         return e;
@@ -214,7 +193,7 @@ export function useTowerDefenseEngine() {
         })).filter(p => p.progress < 1));
 
         gameLoopRef.current = requestAnimationFrame(gameTick);
-    }, [gameActive, gameOver, enemies, wave, path]);
+    }, [gameActive, gameOver, enemies, wave, path, score, updateHighScore, incrementPlays]);
 
     useEffect(() => {
         if (wave > 0 && !gameOver) {
@@ -224,17 +203,21 @@ export function useTowerDefenseEngine() {
                 newEnemies.push({
                     id: enemyIdCounter.current++,
                     pos: { ...path[0] },
-                    pathIndex: -i * 10, // Staggered entry (1 full cell apart)
+                    pathIndex: -i * 10,
                     health: 30 + wave * 15,
                     maxHealth: 30 + wave * 15,
-                    speed: 0.025, // Constant speed to prevent catching up and overlapping
+                    speed: 0.025,
                 });
             }
             setEnemies(newEnemies);
             lastTickRef.current = 0;
             setGameActive(true);
+
+            // Increment wins per wave or just once at certain milestones?
+            // Let's assume clearing a wave is a minor "win".
+            if (wave > 1) incrementWins(GAME_ID);
         }
-    }, [wave, gameOver, path]);
+    }, [wave, gameOver, path, incrementWins]);
 
     useEffect(() => {
         if (gameActive && enemies.length === 0 && !gameOver && wave > 0) {
@@ -256,7 +239,7 @@ export function useTowerDefenseEngine() {
 
     const regeneratePath = () => {
         if (wave === 0 && towers.length === 0) {
-            setPath(generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
+            setPath(TDLogic.generateRandomPath(GRID_WIDTH, GRID_HEIGHT));
         }
     };
 
@@ -268,6 +251,7 @@ export function useTowerDefenseEngine() {
             money,
             health,
             wave,
+            score,
             gameActive,
             gameOver,
             path

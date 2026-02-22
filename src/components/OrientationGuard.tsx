@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { RotateCw, Monitor } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export default function OrientationGuard({ children, locked = false }: { children: React.ReactNode, locked?: boolean }) {
+export default function OrientationGuard({ children, locked = false }: { children: ReactNode, locked?: boolean }) {
     const { t } = useTranslation();
     const [isPortrait, setIsPortrait] = useState(false);
 

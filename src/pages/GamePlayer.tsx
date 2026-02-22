@@ -4,6 +4,7 @@ import { ArrowLeft, AlertTriangle, Loader2, Sparkles, LayoutGrid } from 'lucide-
 import { GAMES } from '../data/games';
 import { useTranslation } from 'react-i18next';
 import OrientationGuard from '../components/OrientationGuard';
+import { useSEO } from '../hooks/useSEO';
 
 // Lazy loading game components
 const HexConquest = lazy(() => import('../games/HexConquest'));
@@ -29,6 +30,14 @@ export default function GamePlayer() {
   const { t } = useTranslation();
   const { gameId } = useParams();
   const game = GAMES.find(g => g.id === gameId);
+
+  // Dynamic SEO based on whether a game is found or not
+  useSEO({
+    title: game ? `${t(`games.${game.id}.title`)} | Play Free SEO Game | DsFunGames` : `${t('common.missionNotFound')} | DsFunGames`,
+    description: game ? t(`games.${game.id}.description`) : t('common.missionDesc'),
+    url: `https://fungames.tacticalhub.com/play/${gameId || ''}`,
+    image: game ? game.thumbnail : '/favicon.png'
+  });
 
   if (!game) {
     return (

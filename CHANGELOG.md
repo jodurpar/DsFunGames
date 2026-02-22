@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2026-02-22
+
+### Added
+- **SEO Optimization**: Implemented dynamic metadata management with a custom `useSEO` hook.
+- **SEO Infrastructure**: Added `sitemap.xml` and `robots.txt` for better search engine indexing.
+- **SEO Meta Tags**: Added Open Graph and Twitter Cards for rich social media sharing.
+- **Testing**: Added logic-specific test suites for all refactored game engines.
+
+### Changed
+- **Architecture Refactor**: Successfully decoupled pure game logic from React hooks for `Logic Robot`, `Grid Wars` (Tactical Memory), and `Hex Conquest`.
+- **Global State**: Integrated all refactored games with the global `useGameStore` (Zustand) for persistent statistics and high scores.
+- **Performance**: Optimized game engines by moving heavy calculations to pure utility modules.
+- **SEO**: Updated `index.html` with professional meta tags, keywords, and semantic titles.
+
 ## [Unreleased] - 2026-02-22
 
 ### Added
