@@ -1,9 +1,5 @@
 # DsFunGames 🎮
 
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 ## Descripción
 DsFunGames es una plataforma web moderna de juegos de estrategia y puzles ligeros en 2D, construida con React y diseñada con una estética minimalista y profesional. La plataforma ofrece una experiencia de usuario fluida con una interfaz "Modern Light" optimizada tanto para escritorio como para dispositivos móviles.
 
