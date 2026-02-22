@@ -2,6 +2,8 @@
 
 DsFunGames is a premium suite of minimalist strategy and logic games designed for modern commanders. It combines high-intensity logic with a sleek, tactical aesthetic.
 
+**Test Page**: [https://dsfungames.duransoftware.com/](https://dsfungames.duransoftware.com/)
+
 ## 🚀 Experience the Future of Strategy
 
 Access curated tactical simulations featuring precision gameplay and immersive visual effects. 
