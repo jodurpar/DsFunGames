@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Shield, Sword, Zap, Crosshair, Skull, Trophy, RefreshCw } from 'lucide-react';
 import { useTacticalMemoryEngine, CardType } from '../hooks/useTacticalMemoryEngine';
+import { useTranslation, Trans } from 'react-i18next';
 
 const ICONS = {
   tank: Shield,
@@ -21,6 +22,7 @@ const COLORS = {
 };
 
 export default function GridWars() {
+  const { t } = useTranslation();
   const { state, actions } = useTacticalMemoryEngine();
   const { cards, moves, matches, gameOver } = state;
   const { handleCardClick, initializeGame } = actions;
@@ -38,21 +40,21 @@ export default function GridWars() {
             <div className="bg-game-accent/10 p-2 rounded-xl">
               <Zap className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-sm uppercase tracking-wider">Tactical Guide</h3>
+            <h3 className="font-extrabold text-sm uppercase tracking-wider">{t('gridWars.guideTitle')}</h3>
           </div>
 
           <div className="space-y-6">
             <div className="bg-game-accent/5 p-4 rounded-2xl border border-game-accent/10">
               <p className="text-[13px] text-game-text font-semibold leading-relaxed">
-                Train your memory to identify and neutralize hidden tactical units.
+                {t('gridWars.mainGoal')}
               </p>
             </div>
 
             {[
-              { id: 1, title: 'Reveal Unit', desc: 'Flip any card to see which tactical unit is hidden.' },
-              { id: 2, title: 'Find Pairs', desc: 'Match two units of the same type to secure them.' },
-              { id: 3, title: 'Intelligence', desc: 'Remember locations of non-matching units.' },
-              { id: 4, title: 'Efficiency', desc: 'Clear the field in the fewest moves to earn high honors.' },
+              { id: 1, title: t('gridWars.step1Title'), desc: t('gridWars.step1Desc') },
+              { id: 2, title: t('gridWars.step2Title'), desc: t('gridWars.step2Desc') },
+              { id: 3, title: t('gridWars.step3Title'), desc: t('gridWars.step3Desc') },
+              { id: 4, title: t('gridWars.step4Title'), desc: t('gridWars.step4Desc') },
             ].map(step => (
               <div key={step.id} className="flex gap-4">
                 <div className="w-8 h-8 rounded-xl bg-game-accent/10 flex items-center justify-center text-xs font-black text-game-accent shrink-0">
@@ -69,7 +71,7 @@ export default function GridWars() {
           </div>
 
           <div className="pt-6 border-t border-game-border">
-            <p className="text-[11px] text-game-muted italic font-medium">Focus your mind, soldier!</p>
+            <p className="text-[11px] text-game-muted italic font-medium">{t('gridWars.luck')}</p>
           </div>
         </div>
       </div>
@@ -80,11 +82,11 @@ export default function GridWars() {
         <div className="w-full glass-card p-4 sm:p-6 rounded-[2.5rem] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 sm:gap-8">
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">Tactical Moves</span>
+              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('gridWars.moves')}</span>
               <span className="font-black text-2xl text-game-text font-mono">{moves}</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">Identified Units</span>
+              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('gridWars.units')}</span>
               <span className="font-black text-2xl text-game-accent font-mono">{matches}/10</span>
             </div>
           </div>
@@ -183,10 +185,12 @@ export default function GridWars() {
                 <div className="w-20 h-20 bg-game-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
                   <Trophy className="w-10 h-10 text-game-accent" />
                 </div>
-                <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic text-nowrap">Mission Complete!</h2>
-                <p className="text-game-muted font-medium max-w-xs mx-auto leading-relaxed">
-                  Field cleared with high efficiency in <span className="text-game-accent font-bold">{moves} tactical moves</span>.
-                </p>
+                <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic text-nowrap">{t('gridWars.complete')}</h2>
+                <div className="text-game-muted font-medium max-w-xs mx-auto leading-relaxed">
+                  <Trans i18nKey="gridWars.completeDesc" values={{ count: moves }}>
+                    Field cleared with high efficiency in <span className="text-game-accent font-bold">{moves} tactical moves</span>.
+                  </Trans>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm px-4">
@@ -194,13 +198,13 @@ export default function GridWars() {
                   onClick={initializeGame}
                   className="premium-button flex-1 flex items-center justify-center gap-3 bg-game-accent hover:bg-game-accent-light text-white px-8 py-4 rounded-2xl font-black shadow-accent transition-all"
                 >
-                  <RefreshCw className="w-5 h-5" /> New Mission
+                  <RefreshCw className="w-5 h-5" /> {t('gridWars.newMission')}
                 </button>
                 <Link
                   to="/"
                   className="premium-button flex-1 flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-game-text px-8 py-4 rounded-2xl font-black border border-game-border transition-all"
                 >
-                  Abort
+                  {t('gridWars.abort')}
                 </Link>
               </div>
             </motion.div>

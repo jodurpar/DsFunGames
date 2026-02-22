@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { RefreshCw, Trophy, Skull } from 'lucide-react';
 import { useTurnBasedSystem } from '../hooks/useTurnBasedSystem';
 import { Owner } from '../core/engine';
+import { useTranslation } from 'react-i18next';
 
 export default function HexConquest() {
+  const { t } = useTranslation();
   const GRID_SIZE = 25; // 5x5 grid
   const { turn, gameState, actions } = useTurnBasedSystem();
 
@@ -87,21 +89,21 @@ export default function HexConquest() {
             <div className="bg-game-accent/10 p-2 rounded-xl">
               <RefreshCw className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-sm uppercase tracking-wider">Strategy Guide</h3>
+            <h3 className="font-extrabold text-sm uppercase tracking-wider">{t('hexConquest.guideTitle')}</h3>
           </div>
 
           <div className="space-y-6">
             <div className="bg-game-accent/5 p-4 rounded-2xl border border-game-accent/10">
               <p className="text-[13px] text-game-text font-semibold leading-relaxed">
-                Capture as much territory as possible to outperform the opposition AI.
+                {t('hexConquest.mainGoal')}
               </p>
             </div>
 
             {[
-              { id: 1, title: 'Your Movement', desc: 'Secure any available gray sector to claim it for your team.' },
-              { id: 2, title: 'AI Counter', desc: 'The opposition will immediately attempt to re-establish control.' },
-              { id: 3, title: 'Tactics', desc: 'Plan sectors ahead to block AI expansion routes.' },
-              { id: 4, title: 'Victory', desc: 'When all sectors are claimed, the majority owner wins.' },
+              { id: 1, title: t('hexConquest.step1Title'), desc: t('hexConquest.step1Desc') },
+              { id: 2, title: t('hexConquest.step2Title'), desc: t('hexConquest.step2Desc') },
+              { id: 3, title: t('hexConquest.step3Title'), desc: t('hexConquest.step3Desc') },
+              { id: 4, title: t('hexConquest.step4Title'), desc: t('hexConquest.step4Desc') },
             ].map(step => (
               <div key={step.id} className="flex gap-4">
                 <div className="w-8 h-8 rounded-xl bg-game-accent/10 flex items-center justify-center text-xs font-black text-game-accent shrink-0">
@@ -118,7 +120,7 @@ export default function HexConquest() {
           </div>
 
           <div className="pt-6 border-t border-game-border">
-            <p className="text-[11px] text-game-muted italic font-medium">Think ahead, Commander!</p>
+            <p className="text-[11px] text-game-muted italic font-medium">{t('hexConquest.luck')}</p>
           </div>
         </div>
       </div>
@@ -129,14 +131,14 @@ export default function HexConquest() {
         <div className="w-full glass-card p-4 sm:p-6 rounded-[2.5rem] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 sm:gap-8">
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">Your Sectors</span>
+              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('hexConquest.yourSectors')}</span>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-game-accent" />
                 <span className="font-black text-2xl text-game-text font-mono">{grid.filter(c => c === 'player').length}</span>
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">AI Sectors</span>
+              <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('hexConquest.aiSectors')}</span>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <span className="font-black text-2xl text-game-text font-mono">{grid.filter(c => c === 'ai').length}</span>
@@ -147,11 +149,11 @@ export default function HexConquest() {
           <div className="hidden sm:block">
             {gameOver ? (
               <div className={`px-4 py-2 rounded-xl font-black text-sm uppercase tracking-tighter ${winner === 'player' ? 'bg-emerald-50 text-emerald-600' : winner === 'ai' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-600'}`}>
-                {winner === 'player' ? 'Mission Success' : winner === 'ai' ? 'Mission Failure' : 'Strategic Draw'}
+                {winner === 'player' ? t('hexConquest.success') : winner === 'ai' ? t('hexConquest.failure') : t('hexConquest.draw')}
               </div>
             ) : (
               <div className="text-xs font-bold text-game-muted uppercase tracking-widest animate-pulse">
-                {isPlayerTurn ? 'Action Required' : 'AI Processing...'}
+                {isPlayerTurn ? t('hexConquest.actionRequired') : t('hexConquest.analyzing')}
               </div>
             )}
           </div>
@@ -232,7 +234,6 @@ export default function HexConquest() {
                             boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -4px 8px rgba(0,0,0,0.1)'
                           }}
                         >
-                          {/* Inner Bevel highlighting for the hexagon feel */}
                           <div
                             className="absolute inset-[2px] opacity-50 hex-polygon pointer-events-none"
                             style={{
@@ -240,7 +241,6 @@ export default function HexConquest() {
                             }}
                           />
 
-                          {/* Glass Sphere for Pieces */}
                           <AnimatePresence>
                             {cell && (
                               <motion.div
@@ -259,11 +259,8 @@ export default function HexConquest() {
                                   backdropFilter: 'blur(4px)'
                                 }}
                               >
-                                {/* Core highlight of the sphere */}
                                 <div className="absolute top-[15%] left-[20%] w-[30%] h-[30%] bg-white rounded-full blur-[1px] opacity-80" />
-                                {/* Bottom bounce light */}
                                 <div className="absolute bottom-[10%] right-[20%] w-[40%] h-[20%] bg-white rounded-full blur-[3px] opacity-30 rotate-[-45deg]" />
-                                {/* Under-sphere colored shadow cast on the hex */}
                                 <div className="absolute -bottom-2 w-[80%] h-[30%] bg-black/40 rounded-full blur-[4px] -z-10" />
                               </motion.div>
                             )}
@@ -294,10 +291,10 @@ export default function HexConquest() {
                     )}
                   </div>
                   <h2 className={`text-4xl font-black mb-4 uppercase italic tracking-tighter ${winner === 'player' ? 'text-slate-900' : 'text-red-700'}`}>
-                    {winner === 'player' ? 'Mission Success!' : winner === 'ai' ? 'Mission Failure' : 'Strategic Draw'}
+                    {winner === 'player' ? t('hexConquest.success') : winner === 'ai' ? t('hexConquest.failure') : t('hexConquest.draw')}
                   </h2>
                   <p className="text-game-muted font-medium max-w-xs mx-auto leading-relaxed">
-                    {winner === 'player' ? 'You have successfully secured the intelligence territory.' : winner === 'ai' ? 'The opposition has established regional control.' : 'High-intensity stalemate: No strategic gain Achieved.'}
+                    {winner === 'player' ? t('hexConquest.successDesc') : winner === 'ai' ? t('hexConquest.failureDesc') : t('hexConquest.drawDesc')}
                   </p>
                 </div>
 
@@ -306,13 +303,13 @@ export default function HexConquest() {
                     onClick={resetGame}
                     className="premium-button flex-1 flex items-center justify-center gap-3 bg-game-accent hover:bg-game-accent-light text-white px-8 py-4 rounded-2xl font-black shadow-accent transition-all"
                   >
-                    <RefreshCw className="w-5 h-5" /> New Mission
+                    <RefreshCw className="w-5 h-5" /> {t('hexConquest.newMission')}
                   </button>
                   <Link
                     to="/"
                     className="premium-button flex-1 flex items-center justify-center gap-3 bg-slate-50 hover:bg-slate-100 text-game-text px-8 py-4 rounded-2xl font-black border border-game-border transition-all"
                   >
-                    Abort
+                    {t('hexConquest.abort')}
                   </Link>
                 </div>
               </motion.div>

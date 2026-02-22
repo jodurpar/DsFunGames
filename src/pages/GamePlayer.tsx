@@ -2,6 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { ArrowLeft, AlertTriangle, Loader2, Sparkles, LayoutGrid } from 'lucide-react';
 import { GAMES } from '../data/games';
+import { useTranslation } from 'react-i18next';
+import OrientationGuard from '../components/OrientationGuard';
 
 // Lazy loading game components
 const HexConquest = lazy(() => import('../games/HexConquest'));
@@ -10,19 +12,21 @@ const TowerDefenseLite = lazy(() => import('../games/TowerDefenseLite'));
 const LogicRobot = lazy(() => import('../games/LogicRobot'));
 
 function GameLoading() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center p-12 sm:p-20 glass-card rounded-[3rem] animate-pulse">
       <div className="relative">
         <div className="absolute inset-0 bg-game-accent/20 blur-xl rounded-full" />
         <Loader2 className="relative w-12 h-12 text-game-accent animate-spin mb-6" />
       </div>
-      <p className="text-game-text font-black uppercase tracking-widest text-sm">Synchronizing Systems...</p>
-      <p className="text-game-muted text-xs mt-2">Preparing strategic environment</p>
+      <p className="text-game-text font-black uppercase tracking-widest text-sm">{t('common.syncing')}</p>
+      <p className="text-game-muted text-xs mt-2">{t('common.preparing')}</p>
     </div>
   );
 }
 
 export default function GamePlayer() {
+  const { t } = useTranslation();
   const { gameId } = useParams();
   const game = GAMES.find(g => g.id === gameId);
 
@@ -32,16 +36,16 @@ export default function GamePlayer() {
         <div className="bg-yellow-50 p-6 rounded-[2.5rem] border border-yellow-100 mb-8">
           <AlertTriangle className="w-16 h-16 text-yellow-600" />
         </div>
-        <h2 className="text-4xl font-black text-game-text mb-4 tracking-tight">Mission Not Found</h2>
+        <h2 className="text-4xl font-black text-game-text mb-4 tracking-tight">{t('common.missionNotFound')}</h2>
         <p className="text-game-muted max-w-sm mb-8 leading-relaxed">
-          The requested intelligence sector is currently inaccessible or under maintenance.
+          {t('common.missionDesc')}
         </p>
         <Link
           to="/"
           className="premium-button flex items-center gap-3 bg-game-accent hover:bg-game-accent-light text-white px-8 py-4 rounded-2xl font-bold shadow-accent"
         >
           <LayoutGrid className="w-5 h-5" />
-          Return to Command Center
+          {t('common.returnCommand')}
         </Link>
       </div>
     );
@@ -61,8 +65,8 @@ export default function GamePlayer() {
         return (
           <div className="flex flex-col items-center justify-center p-12 sm:p-20 glass-card rounded-[3rem] border-dashed border-2">
             <Sparkles className="w-12 h-12 text-game-accent/40 mb-6" />
-            <h3 className="text-2xl font-bold text-game-text mb-2 tracking-tight text-center">Classified Development</h3>
-            <p className="text-game-muted text-center max-w-sm">This sector is currently being fortified. Our best engineers are on the front line.</p>
+            <h3 className="text-2xl font-bold text-game-text mb-2 tracking-tight text-center">{t('common.classified')}</h3>
+            <p className="text-game-muted text-center max-w-sm">{t('common.classifiedDesc')}</p>
           </div>
         );
     }
@@ -71,36 +75,41 @@ export default function GamePlayer() {
   return (
     <div className="flex flex-col h-full gap-4 sm:gap-6">
       {/* Dynamic Game Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-0 shrink-0">
-        <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 shrink-0">
+        <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="p-4 rounded-2xl bg-white border border-game-border shadow-sm hover:border-game-accent/30 hover:shadow-md transition-all group"
+            className="p-2 rounded-xl bg-white border border-game-border shadow-sm hover:border-game-accent/30 transition-all group"
           >
-            <ArrowLeft className="w-6 h-6 text-game-muted group-hover:text-game-accent transition-colors" />
+            <ArrowLeft className="w-4 h-4 text-game-muted group-hover:text-game-accent transition-colors" />
           </Link>
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-game-accent/5 border border-game-accent/10 text-game-accent text-[10px] font-bold uppercase tracking-wider mb-1">
-              Active Operation
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <div className="text-game-accent text-[9px] font-black uppercase tracking-tight leading-none mb-0.5 opacity-80">
+                {t('common.operation')}
+              </div>
+              <h1 className="text-lg sm:text-xl font-black text-game-text tracking-tighter uppercase italic leading-none">{t(`games.${game.id}.title`)}</h1>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-game-text tracking-tighter uppercase italic">{game.title}</h1>
-            <div className="flex items-center gap-3 text-xs font-bold text-game-muted uppercase tracking-widest">
-              <span>{game.category}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-300" />
-              <span className="text-yellow-600">{game.difficulty} LEVEL</span>
+            <div className="h-4 w-px bg-game-border hidden sm:block" />
+            <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold text-game-muted uppercase tracking-widest pt-1">
+              <span>{t(`categories.${game.category}`)}</span>
+              <span className="w-0.5 h-0.5 rounded-full bg-slate-300" />
+              <span className="text-yellow-600">{t(`difficulties.${game.difficulty}`)}</span>
             </div>
           </div>
         </div>
 
         <div className="hidden lg:flex items-center gap-2 text-game-muted/40">
-          <span className="text-[10px] font-bold uppercase tracking-widest">Sector Stability: Secure</span>
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+          <span className="text-[9px] font-bold uppercase tracking-widest">{t('common.stability')}: {t('common.secure')}</span>
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse opacity-60" />
         </div>
       </div>
 
       <div className="game-container relative flex-1 min-h-0">
         <Suspense fallback={<GameLoading />}>
-          {renderGame()}
+          <OrientationGuard locked={gameId === 'tower-defense-lite' || gameId === 'logic-robot'}>
+            {renderGame()}
+          </OrientationGuard>
         </Suspense>
       </div>
     </div>

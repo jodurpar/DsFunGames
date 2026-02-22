@@ -7,6 +7,7 @@ import {
     Bot, Flag, ChevronRight
 } from 'lucide-react';
 import { useRobotEngine, Direction } from '../hooks/useRobotEngine';
+import { useTranslation } from 'react-i18next';
 
 const BUILDING_ICONS: Record<string, any> = {
     'Hospital': Hospital,
@@ -33,6 +34,7 @@ const BUILDING_ICONS: Record<string, any> = {
 };
 
 export default function LogicRobot() {
+    const { t } = useTranslation();
     const { state, actions } = useRobotEngine();
     const { grid, robotPos, targetPos, instructions, isExecuting, currentInstructionIndex, score, message, level } = state;
     const { addInstruction, removeInstruction, updateSteps, clearInstructions, runProgram, generateLevel, setLevel } = actions;
@@ -42,8 +44,6 @@ export default function LogicRobot() {
     // Calculate cell size dynamically to ensure it never exceeds container width (max ~720px) 
     // and naturally fits without vertical scrolling, capped at 48px to prevent gigantic cells.
     const cellSize = Math.min(48, Math.floor(720 / GRID_WIDTH));
-    const BOARD_WIDTH = GRID_WIDTH * cellSize;
-    const BOARD_HEIGHT = GRID_HEIGHT * cellSize;
 
     const getCellContent = (y: number, x: number) => {
         const isRobot = robotPos.x === x && robotPos.y === y;
@@ -97,21 +97,21 @@ export default function LogicRobot() {
                         <div className="bg-game-accent/10 p-2 rounded-xl">
                             <Library className="w-5 h-5" />
                         </div>
-                        <h3 className="font-extrabold text-sm uppercase tracking-wider">Logic Guide</h3>
+                        <h3 className="font-extrabold text-sm uppercase tracking-wider">{t('logicRobot.guideTitle')}</h3>
                     </div>
 
                     <div className="space-y-6">
                         <div className="bg-game-accent/5 p-4 rounded-2xl border border-game-accent/10">
                             <p className="text-[13px] text-game-text font-semibold leading-relaxed">
-                                Program the tactical unit to reach the objective flag using logic tokens.
+                                {t('logicRobot.mainGoal')}
                             </p>
                         </div>
 
                         {[
-                            { id: 1, title: 'Route Planning', desc: "Select direction tokens to add commands to the unit's local buffer." },
-                            { id: 2, title: 'Distance Matrix', desc: 'Use adjustment controls to define movement steps for each instruction.' },
-                            { id: 3, title: 'Collision Protocol', desc: 'Architectural obstacles trigger a command abort. Calculate paths carefully.' },
-                            { id: 4, title: 'Deployment', desc: 'Execute the program. Success is achieved upon objective contact.' },
+                            { id: 1, title: t('logicRobot.step1Title'), desc: t('logicRobot.step1Desc') },
+                            { id: 2, title: t('logicRobot.step2Title'), desc: t('logicRobot.step2Desc') },
+                            { id: 3, title: t('logicRobot.step3Title'), desc: t('logicRobot.step3Desc') },
+                            { id: 4, title: t('logicRobot.step4Title'), desc: t('logicRobot.step4Desc') },
                         ].map(step => (
                             <div key={step.id} className="flex gap-4">
                                 <div className="w-8 h-8 rounded-xl bg-game-accent/10 flex items-center justify-center text-xs font-black text-game-accent shrink-0">
@@ -130,7 +130,7 @@ export default function LogicRobot() {
                     <div className="pt-6 border-t border-game-border">
                         <div className="flex items-center gap-2">
                             <Bot className="w-4 h-4 text-game-accent" />
-                            <span className="text-[11px] text-game-muted italic font-medium">Good luck, Commander!</span>
+                            <span className="text-[11px] text-game-muted italic font-medium">{t('logicRobot.luck')}</span>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ export default function LogicRobot() {
                 <div className="w-full glass-card p-4 sm:p-6 rounded-[2.5rem] flex flex-wrap justify-between items-center gap-6">
                     <div className="flex items-center gap-6">
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">Score Matrix</span>
+                            <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('logicRobot.scoreMatrix')}</span>
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
@@ -157,7 +157,7 @@ export default function LogicRobot() {
                         </div>
 
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">Sector Depth</span>
+                            <span className="text-[10px] font-bold text-game-muted uppercase tracking-widest mb-1">{t('logicRobot.sectorDepth')}</span>
                             <div className="flex gap-1.5">
                                 {Array.from({ length: 10 }).map((_, i) => (
                                     <button
@@ -189,7 +189,7 @@ export default function LogicRobot() {
                                 className="hidden sm:block"
                             >
                                 <p className={`text-xs font-black uppercase tracking-widest ${message.includes('SUCCESS') ? 'text-emerald-600' : message.includes('FAILURE') ? 'text-red-600' : 'text-game-muted'}`}>
-                                    {message || 'System Idle'}
+                                    {message === 'SUCCESS' ? t('logicRobot.success') : message === 'FAILURE' ? t('logicRobot.failure') : message || t('logicRobot.systemIdle')}
                                 </p>
                             </motion.div>
                         </AnimatePresence>
@@ -256,11 +256,11 @@ export default function LogicRobot() {
                         <div className="bg-slate-100 p-2 rounded-xl">
                             <ChevronRight className="w-5 h-5" />
                         </div>
-                        <h3 className="font-extrabold text-sm uppercase tracking-wider">Logic Controller</h3>
+                        <h3 className="font-extrabold text-sm uppercase tracking-wider">{t('logicRobot.controllerTitle')}</h3>
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-[10px] font-bold text-game-muted uppercase tracking-widest">Available Operations</h4>
+                        <h4 className="text-[10px] font-bold text-game-muted uppercase tracking-widest">{t('logicRobot.operations')}</h4>
                         <div className="grid grid-cols-4 gap-2">
                             {(['UP', 'DOWN', 'LEFT', 'RIGHT'] as Direction[]).map(dir => (
                                 <button
@@ -281,13 +281,13 @@ export default function LogicRobot() {
 
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <h4 className="text-[10px] font-bold text-game-muted uppercase tracking-widest">Memory Buffer ({instructions.length}/14)</h4>
+                            <h4 className="text-[10px] font-bold text-game-muted uppercase tracking-widest">{t('logicRobot.memoryBuffer')} ({instructions.length}/14)</h4>
                             <button
                                 onClick={clearInstructions}
                                 disabled={isExecuting || instructions.length === 0}
                                 className="text-[10px] text-red-500 hover:text-red-600 uppercase font-black tracking-wider disabled:opacity-30"
                             >
-                                Flush
+                                {t('logicRobot.flush')}
                             </button>
                         </div>
 
@@ -344,8 +344,8 @@ export default function LogicRobot() {
                                 {instructions.length === 0 && (
                                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
                                         <Bot className="w-12 h-12 text-slate-200 mb-4" />
-                                        <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Buffer Empty</p>
-                                        <p className="text-[10px] text-slate-400 mt-1">Add movement tokens to begin</p>
+                                        <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">{t('logicRobot.bufferEmpty')}</p>
+                                        <p className="text-[10px] text-slate-400 mt-1">{t('logicRobot.bufferHelp')}</p>
                                     </div>
                                 )}
                             </div>
@@ -363,12 +363,12 @@ export default function LogicRobot() {
                         {isExecuting ? (
                             <>
                                 <div className="animate-spin"><RefreshCw className="w-4 h-4" /></div>
-                                Analyzing...
+                                {t('logicRobot.analyzing')}
                             </>
                         ) : (
                             <>
                                 <div className="bg-white/20 p-2 rounded-xl"><Play className="w-4 h-4 fill-current" /></div>
-                                Execute Program
+                                {t('logicRobot.execute')}
                             </>
                         )}
                     </button>

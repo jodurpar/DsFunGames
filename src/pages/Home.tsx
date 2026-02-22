@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Play, Info } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { GAMES } from '../data/games';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-12 sm:space-y-20">
       {/* Hero Section */}
@@ -13,7 +16,7 @@ export default function Home() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-game-accent opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-game-accent"></span>
           </span>
-          Next-Gen Strategy
+          {t('home.heroBadge')}
         </div>
 
         <div className="space-y-4">
@@ -22,8 +25,8 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-game-text leading-[1.1]"
           >
-            Tactical Thinking, <br className="hidden sm:block" />
-            <span className="text-game-accent">Refined.</span>
+            {t('home.heroTitle').split(',')[0]}, <br className="hidden sm:block" />
+            <span className="text-game-accent">{t('home.heroTitle').split(',')[1] || t('home.heroSubtitle')}</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -31,7 +34,7 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="text-base sm:text-lg text-game-muted max-w-2xl mx-auto leading-relaxed"
           >
-            Dive into a curated collection of lightweight, precision-crafted strategy games designed for the modern commander.
+            {t('home.heroSubtitle')}
           </motion.p>
         </div>
       </section>
@@ -50,7 +53,7 @@ export default function Home() {
             <div className="aspect-[4/3] relative overflow-hidden rounded-2xl bg-slate-50 border border-game-border flex items-center justify-center group-hover:shadow-lg transition-all duration-500">
               <img
                 src={game.thumbnail}
-                alt={game.title}
+                alt={t(`games.${game.id}.title`)}
                 className="w-full h-full object-contain p-2 transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
               />
@@ -58,7 +61,7 @@ export default function Home() {
 
               <div className="absolute top-3 left-3">
                 <span className="px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[10px] font-bold text-game-text border border-black/5 shadow-sm uppercase tracking-wide">
-                  {game.category}
+                  {t(`categories.${game.category}`)}
                 </span>
               </div>
             </div>
@@ -67,14 +70,14 @@ export default function Home() {
               <div>
                 <div className="flex justify-between items-start gap-2">
                   <h3 className="text-xl font-bold text-game-text group-hover:text-game-accent transition-colors leading-tight">
-                    {game.title}
+                    {t(`games.${game.id}.title`)}
                   </h3>
                   <span className="text-[10px] font-mono font-bold text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100">
-                    {game.difficulty}
+                    {t(`difficulties.${game.difficulty}`)}
                   </span>
                 </div>
                 <p className="text-sm text-game-muted mt-2 line-clamp-2 leading-relaxed min-h-[40px]">
-                  {game.description}
+                  {t(`games.${game.id}.description`)}
                 </p>
               </div>
 
@@ -85,7 +88,7 @@ export default function Home() {
                 <div className="bg-white/20 p-1.5 rounded-lg">
                   <Play className="w-3.5 h-3.5 fill-current" />
                 </div>
-                Connect to Mission
+                {t('common.start')}
               </Link>
             </div>
           </motion.div>
