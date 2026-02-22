@@ -5,76 +5,88 @@ import { GAMES } from '../data/games';
 
 export default function Home() {
   return (
-    <div className="space-y-12">
-      <section className="text-center space-y-4 py-12">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-6xl font-bold tracking-tighter bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent"
-        >
-          Strategy Simplified.
-        </motion.h1>
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-lg text-game-muted max-w-2xl mx-auto"
-        >
-          Dive into our collection of lightweight, browser-based strategy games. 
-          No downloads, no accounts, just pure gameplay.
-        </motion.p>
+    <div className="space-y-12 sm:space-y-20">
+      {/* Hero Section */}
+      <section className="text-center space-y-6 pt-6 sm:pt-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-game-accent/5 border border-game-accent/10 text-game-accent text-[11px] font-bold uppercase tracking-widest mb-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-game-accent opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-game-accent"></span>
+          </span>
+          Next-Gen Strategy
+        </div>
+
+        <div className="space-y-4">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-game-text leading-[1.1]"
+          >
+            Tactical Thinking, <br className="hidden sm:block" />
+            <span className="text-game-accent">Refined.</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-base sm:text-lg text-game-muted max-w-2xl mx-auto leading-relaxed"
+          >
+            Dive into a curated collection of lightweight, precision-crafted strategy games designed for the modern commander.
+          </motion.p>
+        </div>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Games Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 px-2 pb-20">
         {GAMES.map((game, index) => (
           <motion.div
             key={game.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="group relative bg-game-card rounded-2xl overflow-hidden border border-white/5 hover:border-game-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-game-accent/10"
+            className="group glass-card rounded-[2rem] p-4 sm:p-5 hover:border-game-accent/30 transition-all duration-500 hover:-translate-y-2"
           >
-            <div className="aspect-video relative overflow-hidden">
-              <img 
-                src={game.thumbnail} 
+            {/* Thumbnail */}
+            <div className="aspect-[4/3] relative overflow-hidden rounded-2xl bg-slate-50 border border-game-border flex items-center justify-center group-hover:shadow-lg transition-all duration-500">
+              <img
+                src={game.thumbnail}
                 alt={game.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-contain p-2 transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-game-card via-transparent to-transparent opacity-80" />
-              
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                <span className="px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-xs font-mono border border-white/10">
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+
+              <div className="absolute top-3 left-3">
+                <span className="px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[10px] font-bold text-game-text border border-black/5 shadow-sm uppercase tracking-wide">
                   {game.category}
-                </span>
-                <span className="px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-xs font-mono border border-white/10 text-yellow-400">
-                  {game.difficulty}
                 </span>
               </div>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="mt-6 space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-white group-hover:text-game-accent transition-colors">
-                  {game.title}
-                </h3>
-                <p className="text-sm text-game-muted mt-2 line-clamp-2">
+                <div className="flex justify-between items-start gap-2">
+                  <h3 className="text-xl font-bold text-game-text group-hover:text-game-accent transition-colors leading-tight">
+                    {game.title}
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-100">
+                    {game.difficulty}
+                  </span>
+                </div>
+                <p className="text-sm text-game-muted mt-2 line-clamp-2 leading-relaxed min-h-[40px]">
                   {game.description}
                 </p>
               </div>
 
-              <div className="pt-4 flex items-center gap-3">
-                <Link 
-                  to={`/play/${game.id}`}
-                  className="flex-1 flex items-center justify-center gap-2 bg-game-accent hover:bg-blue-600 text-white py-2.5 px-4 rounded-xl font-medium transition-all active:scale-95"
-                >
-                  <Play className="w-4 h-4 fill-current" />
-                  Play Now
-                </Link>
-                <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors border border-white/5">
-                  <Info className="w-5 h-5" />
-                </button>
-              </div>
+              <Link
+                to={`/play/${game.id}`}
+                className="premium-button w-full flex items-center justify-center gap-3 bg-game-accent hover:bg-game-accent-light text-white py-4 rounded-2xl text-sm font-bold shadow-accent hover:shadow-xl transition-all"
+              >
+                <div className="bg-white/20 p-1.5 rounded-lg">
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                </div>
+                Connect to Mission
+              </Link>
             </div>
           </motion.div>
         ))}

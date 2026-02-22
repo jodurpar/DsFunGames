@@ -13,7 +13,7 @@ export const GAMES: Game[] = [
     id: 'hex-conquest',
     title: 'Hex Conquest',
     description: 'A turn-based strategy game where you capture territory on a hexagonal grid.',
-    thumbnail: 'https://picsum.photos/seed/hex/400/300',
+    thumbnail: '/thumbnails/hex-conquest.png',
     category: 'Strategy',
     difficulty: 'Medium',
     players: '1 Player'
@@ -22,7 +22,7 @@ export const GAMES: Game[] = [
     id: 'tower-defense-lite',
     title: 'Tower Defense Lite',
     description: 'Defend your base against waves of enemies in this minimalist tower defense.',
-    thumbnail: 'https://picsum.photos/seed/tower/400/300',
+    thumbnail: '/thumbnails/tower-defense-lite.png',
     category: 'Strategy',
     difficulty: 'Hard',
     players: '1 Player'
@@ -31,9 +31,18 @@ export const GAMES: Game[] = [
     id: 'grid-wars',
     title: 'Grid Wars',
     description: 'Tactical grid combat. Outmaneuver your opponent in this chess-like game.',
-    thumbnail: 'https://picsum.photos/seed/grid/400/300',
+    thumbnail: '/thumbnails/grid-wars.png',
     category: 'Strategy',
     difficulty: 'Medium',
     players: '2 Players (Local)'
+  },
+  {
+    id: 'logic-robot',
+    title: 'Logic Robot',
+    description: 'Program your robot to navigate the city. Avoid obstacles and reach the target building.',
+    thumbnail: '/thumbnails/logic-robot.png',
+    category: 'Puzzle',
+    difficulty: 'Medium',
+    players: '1 Player'
   }
 ];
