@@ -1,7 +1,8 @@
-version: '3.8'
+name: scifyclub
 
 services:
-  web:
+  dsfungames:
+    image: jodurpar/dsfungames-web:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,8 +13,8 @@ services:
     environment:
       - NODE_ENV=production
     networks:
-      - dsfungames-net
+      - scifyclub-network
 
 networks:
-  dsfungames-net:
+  scifyclub-network:
     driver: bridge
