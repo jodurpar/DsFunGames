@@ -1,0 +1,59 @@
+<svg width="640" height="480" viewBox="0 0 640 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="480" rx="48" fill="#F8FAFC"/>
+  <rect x="36" y="36" width="568" height="408" rx="40" fill="url(#panel)" stroke="#E2E8F0" stroke-width="4"/>
+  <circle cx="130" cy="112" r="16" fill="#6366F1" fill-opacity="0.16"/>
+  <circle cx="510" cy="368" r="22" fill="#10B981" fill-opacity="0.12"/>
+  <circle cx="548" cy="110" r="20" fill="#EF4444" fill-opacity="0.12"/>
+
+  <rect x="194" y="108" width="252" height="246" rx="36" fill="#0F172A"/>
+  <rect x="230" y="150" width="180" height="64" rx="24" fill="#020617" stroke="#334155" stroke-width="4"/>
+  <text x="320" y="193" text-anchor="middle" fill="#F8FAFC" font-family="JetBrains Mono, monospace" font-size="38" font-weight="800">00:20</text>
+
+  <circle cx="238" cy="120" r="10" fill="#F87171"/>
+  <circle cx="402" cy="120" r="10" fill="#A7F3D0"/>
+
+  <g filter="url(#shadow)">
+    <rect x="126" y="70" width="24" height="138" rx="12" fill="url(#wireRed)"/>
+    <rect x="178" y="70" width="24" height="152" rx="12" fill="url(#wireBlue)"/>
+    <rect x="438" y="70" width="24" height="148" rx="12" fill="url(#wireYellow)"/>
+    <rect x="490" y="70" width="24" height="140" rx="12" fill="url(#wireGreen)"/>
+  </g>
+
+  <path d="M154 206L230 268" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+  <path d="M154 274L230 212" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="138" cy="198" r="18" stroke="#0F172A" stroke-width="10"/>
+  <circle cx="138" cy="282" r="18" stroke="#0F172A" stroke-width="10"/>
+
+  <rect x="214" y="264" width="212" height="58" rx="22" fill="url(#success)" stroke="#86EFAC" stroke-width="3"/>
+  <text x="320" y="302" text-anchor="middle" fill="#166534" font-family="Plus Jakarta Sans, sans-serif" font-size="28" font-weight="800">DESACTIVADA</text>
+
+  <defs>
+    <linearGradient id="panel" x1="86" y1="72" x2="554" y2="412" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F8FAFC"/>
+    </linearGradient>
+    <linearGradient id="success" x1="214" y1="264" x2="426" y2="322" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCFCE7"/>
+      <stop offset="1" stop-color="#BBF7D0"/>
+    </linearGradient>
+    <linearGradient id="wireRed" x1="138" y1="70" x2="138" y2="208" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F87171"/>
+      <stop offset="1" stop-color="#B91C1C"/>
+    </linearGradient>
+    <linearGradient id="wireBlue" x1="190" y1="70" x2="190" y2="222" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="wireYellow" x1="450" y1="70" x2="450" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE047"/>
+      <stop offset="1" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="wireGreen" x1="502" y1="70" x2="502" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4ADE80"/>
+      <stop offset="1" stop-color="#15803D"/>
+    </linearGradient>
+    <filter id="shadow" x="114" y="62" width="412" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+</svg>

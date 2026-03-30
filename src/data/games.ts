@@ -44,5 +44,14 @@ export const GAMES: Game[] = [
     category: 'Puzzle',
     difficulty: 'Medium',
     players: '1 Player'
+  },
+  {
+    id: 'bomb-disposal',
+    title: 'Bomb Disposal',
+    description: 'Cut the right wire before the timer hits zero and stop the machine from winning the round.',
+    thumbnail: '/thumbnails/bomb-disposal.svg',
+    category: 'Arcade',
+    difficulty: 'Medium',
+    players: '1 Player'
   }
 ];

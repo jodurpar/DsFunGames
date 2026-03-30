@@ -11,6 +11,7 @@ const HexConquest = lazy(() => import('../games/HexConquest'));
 const GridWars = lazy(() => import('../games/GridWars'));
 const TowerDefenseLite = lazy(() => import('../games/TowerDefenseLite'));
 const LogicRobot = lazy(() => import('../games/LogicRobot'));
+const BombDisposal = lazy(() => import('../games/BombDisposal'));
 
 function GameLoading() {
   const { t } = useTranslation();
@@ -70,6 +71,8 @@ export default function GamePlayer() {
         return <TowerDefenseLite />;
       case 'logic-robot':
         return <LogicRobot />;
+      case 'bomb-disposal':
+        return <BombDisposal />;
       default:
         return (
           <div className="flex flex-col items-center justify-center p-12 sm:p-20 glass-card rounded-[3rem] border-dashed border-2">
